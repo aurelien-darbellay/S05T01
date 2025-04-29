@@ -34,13 +34,8 @@
         <mxCell id="3G4DrIbMGPFHeGoIDFCp-15" value="- result:&amp;nbsp;&lt;div&gt;- player&#39;s Hand: Hand&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="3G4DrIbMGPFHeGoIDFCp-12" vertex="1">
           <mxGeometry y="78" width="320" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="Bd6CzLYdSDRMSfpSPUQk-0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="3G4DrIbMGPFHeGoIDFCp-22">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="160" y="780" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="3G4DrIbMGPFHeGoIDFCp-22" value="Player" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="120" y="820" width="350" height="250" as="geometry" />
+          <mxGeometry x="80" y="790" width="350" height="250" as="geometry" />
         </mxCell>
         <mxCell id="3G4DrIbMGPFHeGoIDFCp-23" value="- name: String&lt;div&gt;&lt;br&gt;&lt;div&gt;- costumer_id: fk_NULLABLE&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;- id: string&lt;/div&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="3G4DrIbMGPFHeGoIDFCp-22" vertex="1">
           <mxGeometry y="26" width="350" height="114" as="geometry" />
