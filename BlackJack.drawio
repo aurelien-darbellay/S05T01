@@ -1,5 +1,5 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.1.1 Chrome/132.0.6834.210 Electron/34.3.3 Safari/537.36" version="26.1.1">
-  <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.1.1 Chrome/132.0.6834.210 Electron/34.3.3 Safari/537.36" version="26.1.1" pages="2">
+  <diagram id="C5RBs43oDa-KdzZeNtuy" name="UML">
     <mxGraphModel dx="1104" dy="508" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -34,15 +34,10 @@
         <mxCell id="3G4DrIbMGPFHeGoIDFCp-15" value="- result:&amp;nbsp;&lt;div&gt;- player&#39;s Hand: Hand&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="3G4DrIbMGPFHeGoIDFCp-12" vertex="1">
           <mxGeometry y="78" width="320" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="Bd6CzLYdSDRMSfpSPUQk-0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="3G4DrIbMGPFHeGoIDFCp-22">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="160" y="780" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="3G4DrIbMGPFHeGoIDFCp-22" value="Player" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="120" y="820" width="350" height="250" as="geometry" />
+          <mxGeometry x="80" y="790" width="350" height="250" as="geometry" />
         </mxCell>
-        <mxCell id="3G4DrIbMGPFHeGoIDFCp-23" value="- name: String&lt;div&gt;&lt;br&gt;&lt;div&gt;- costumer_id: fk_NULLABLE&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;- id: string&lt;/div&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="3G4DrIbMGPFHeGoIDFCp-22" vertex="1">
+        <mxCell id="3G4DrIbMGPFHeGoIDFCp-23" value="- name: String&lt;div&gt;&lt;br&gt;&lt;div&gt;- costumer_id: fk_NULLABLE&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;- id: int&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;- game_id: string&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="3G4DrIbMGPFHeGoIDFCp-22" vertex="1">
           <mxGeometry y="26" width="350" height="114" as="geometry" />
         </mxCell>
         <mxCell id="3G4DrIbMGPFHeGoIDFCp-24" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="3G4DrIbMGPFHeGoIDFCp-22" vertex="1">
@@ -76,10 +71,21 @@
           <mxGeometry y="26" width="350" height="60" as="geometry" />
         </mxCell>
         <mxCell id="3G4DrIbMGPFHeGoIDFCp-43" value="GameService" style="html=1;whiteSpace=wrap;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="370" y="570" width="180" height="85" as="geometry" />
+          <mxGeometry x="370" y="560" width="180" height="85" as="geometry" />
         </mxCell>
         <mxCell id="3G4DrIbMGPFHeGoIDFCp-48" value="UserService" style="html=1;whiteSpace=wrap;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="370" y="680" width="180" height="85" as="geometry" />
+          <mxGeometry x="370" y="660" width="180" height="85" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="YB8mg8M2vG9r_bo1I5oF" name="EndPoints">
+    <mxGraphModel dx="1931" dy="1677" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="A-w8SP_1EWqdjkVr_bA9-1" value="&amp;nbsp;+ create Game // OneGame/OnePlayer: MongoDB &amp;amp; MySql&lt;div&gt;+ get Game&lt;/div&gt;&lt;div&gt;+ place bet in a game&lt;/div&gt;&lt;div&gt;+ pick action in a game&lt;/div&gt;&lt;div&gt;+ delete game&lt;/div&gt;&lt;div&gt;+ change player in game&lt;/div&gt;&lt;div&gt;+ get ranking&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-10" y="-400" width="580" height="250" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
