@@ -7,18 +7,20 @@ import java.util.List;
 @Document
 public class Game {
     private List<Player> players;
-    private int numTurnsPlayed;
+    private List<Turn> turnsPlayed;
 
-    public int getNumTurnsPlayed() {
-        return numTurnsPlayed;
+    public List<Turn> getTurnsPlayed() {
+        return turnsPlayed;
     }
-    public void setNumTurnsPlayed(int numTurnsPlayed) {
-        this.numTurnsPlayed = numTurnsPlayed;
+
+    public void setTurnsPlayed(List<Turn> turnsPlayed) {
+        this.turnsPlayed = turnsPlayed;
     }
 
     public List<Player> getPlayers() {
         return players;
     }
+
     public void setPlayers(List<Player> players) {
         this.players = players;
     }

@@ -1,9 +1,8 @@
 package aDarbellay.s05.t1.model;
 
+import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.hands.Hand;
-import aDarbellay.s05.t1.model.hands.HandType;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class PlayerTurn {
@@ -56,11 +55,9 @@ public class PlayerTurn {
         return hand;
     }
 
-    public void setHand(List<Card> cards, HandType handType) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        Class<? extends Hand> classHand = handType.getClassHand();
-        Hand newHand = classHand.getDeclaredConstructor().newInstance();;
-        newHand.addAll(cards);
-        this.hand = newHand;
+    public void setHand(List<Card> cards, Hand hand) {
+        hand.addAll(cards);
+        this.hand = hand;
     }
 
     public boolean isResult() {
