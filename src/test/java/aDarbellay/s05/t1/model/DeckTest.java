@@ -9,6 +9,6 @@ class DeckTest {
     @Test
     void testDeckCreation(){
         Deck newDeck = new Deck();
-        newDeck.forEach(System.out::println);
+        newDeck.forEach(card -> System.out.println(card.getValue()));
     }
 }
