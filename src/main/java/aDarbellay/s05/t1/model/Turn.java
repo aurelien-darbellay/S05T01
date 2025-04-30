@@ -9,17 +9,11 @@ public class Turn {
 
     private int id;
     private List<PlayerTurn> playerTurns;
-    private List<PlayerTurn> splitTurns;
-    private List<PlayerTurn> doubleSplitTurns;
-    private List<PlayerTurn> tripleSplitTurns;
     private Hand dealerHand;
     private ArrayList<Card> reserve;
 
     public Turn(int id) {
         this.id = id;
-        this.splitTurns = new ArrayList<PlayerTurn>();
-        this.doubleSplitTurns = new ArrayList<PlayerTurn>();
-        this.tripleSplitTurns = new ArrayList<PlayerTurn>();
     }
 
     public int getId() {
@@ -55,27 +49,5 @@ public class Turn {
         this.reserve = new ArrayList<>(reserve);
     }
 
-    public List<PlayerTurn> getSplitTurns() {
-        return splitTurns;
-    }
 
-    public void setSplitTurns(List<PlayerTurn> splitTurns) {
-        this.splitTurns = splitTurns;
-    }
-
-    public List<PlayerTurn> getDoubleSplitTurns() {
-        return doubleSplitTurns;
-    }
-
-    public void setDoubleSplitTurns(List<PlayerTurn> doubleSplitTurns) {
-        this.doubleSplitTurns = doubleSplitTurns;
-    }
-
-    public List<PlayerTurn> getTripleSplitTurns() {
-        return tripleSplitTurns;
-    }
-
-    public void setTripleSplitTurns(List<PlayerTurn> tripleSplitTurns) {
-        this.tripleSplitTurns = tripleSplitTurns;
-    }
 }

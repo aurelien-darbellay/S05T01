@@ -6,9 +6,7 @@ import aDarbellay.s05.t1.model.hands.Hand;
 import aDarbellay.s05.t1.model.hands.Hand.HandType;
 import aDarbellay.s05.t1.model.hands.Hand.Visibility;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 public class Dealer {
@@ -67,21 +65,22 @@ public class Dealer {
     }
 
     private void invitePlayersToPlayHand(Turn turn) {
-        List<PlayerTurn> playerTurns = turn.getPlayerTurns();
+        Deque<PlayerTurn> turnsToPlay = new ArrayDeque<>(turn.getPlayerTurns());
         //Remake it with Deque//
-        playerTurns.forEach(playerTurn -> {
-            registerPlay(turn, playerTurn);
-        });
+        while (!turnsToPlay.isEmpty()) {
+            PlayerTurn playerTurn = turnsToPlay.pop();
+            registerPlay(turn,playerTurn,turnsToPlay);
+        }
 
     }
 
-    private void registerPlay(Turn turn, PlayerTurn playerTurn) {
+    private void registerPlay(Turn turn, PlayerTurn playerTurn,Deque<PlayerTurn> turnsToPlay) {
         Action playerAction;
         Player player = playerTurn.getPlayer();
         do {
             playerAction = player.pickAction();
             validateAction(playerAction, playerTurn);
-        } while (!playerAction.execute(turn, turn.getReserve(), playerTurn, this::getNCardFromReserve));
+        } while (!playerAction.execute(, turn.getReserve(), , playerTurn, this::getNCardFromReserve));
     }
 
     private void validateAction(Action playerAction, PlayerTurn playerTurn) throws IllegalActionException {
