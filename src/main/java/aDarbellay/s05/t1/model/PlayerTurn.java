@@ -12,11 +12,17 @@ public class PlayerTurn {
     private int bet;
     private List<Action> actions;
     private Hand hand;
+    private boolean issuedFromSplit;
+    private boolean issuedFromDoubleSplit;
+    private boolean issuedFromTripleSplit;
     private boolean result;
 
     public PlayerTurn(int turn, Player player) {
         this.turn = turn;
         this.player = player;
+        this.issuedFromSplit = false;
+        this.issuedFromDoubleSplit = false;
+        this.issuedFromTripleSplit = false;
     }
 
     public int getTurn() {
@@ -66,5 +72,31 @@ public class PlayerTurn {
 
     public void setResult(boolean result) {
         this.result = result;
+    }
+
+    public boolean isIssuedFromSplit() {
+        return issuedFromSplit;
+    }
+
+    public void setIssuedFromSplit(boolean issuedFromSplit) {
+        this.issuedFromSplit = issuedFromSplit;
+    }
+
+    public boolean isIssuedFromDoubleSplit() {
+        return issuedFromDoubleSplit;
+    }
+
+    public void setIssuedFromDoubleSplit(boolean issuedFromDoubleSplit) {
+        this.issuedFromDoubleSplit = issuedFromDoubleSplit;
+        if (issuedFromDoubleSplit) this.setIssuedFromSplit(true);
+    }
+
+    public boolean isIssuedFromTripleSplit() {
+        return issuedFromTripleSplit;
+    }
+
+    public void setIssuedFromTripleSplit(boolean issuedFromTripleSplit) {
+        this.issuedFromTripleSplit = issuedFromTripleSplit;
+        if (issuedFromTripleSplit) this.setIssuedFromDoubleSplit(true);
     }
 }

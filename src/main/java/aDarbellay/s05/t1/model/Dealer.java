@@ -1,24 +1,26 @@
 package aDarbellay.s05.t1.model;
 
+import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.model.actions.Action;
-import aDarbellay.s05.t1.model.hands.HandFactory;
+import aDarbellay.s05.t1.model.hands.Hand;
+import aDarbellay.s05.t1.model.hands.Hand.HandType;
+import aDarbellay.s05.t1.model.hands.Hand.Visibility;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 public class Dealer {
 
     private final Game game;
-    private final HandFactory handFactory;
     private boolean gameOn;
     private List<Card> fullDeck;
 
-    public Dealer(Game game, List<Card> fullDeck, HandFactory handFactory) {
+    public Dealer(Game game, List<Card> fullDeck) {
         this.game = game;
         this.gameOn = false;
         this.fullDeck = fullDeck;
-        this.handFactory = handFactory;
     }
 
     public Turn runTurn() {
@@ -53,13 +55,9 @@ public class Dealer {
         Collections.shuffle(fullDeck);
         turn.setReserve(fullDeck);
         turn.getPlayerTurns().forEach(playerTurn -> {
-            if (playerTurn.getPlayer().isSelf()) {
-                playerTurn.setHand(getNCardFromReserve(2, turn.getReserve()), handFactory.createHand(HandFactory.HandType.OWN));
-            } else {
-                playerTurn.setHand(getNCardFromReserve(2, turn.getReserve()), handFactory.createHand(HandFactory.HandType.OTHER));
-            }
+            playerTurn.setHand(getNCardFromReserve(2, turn.getReserve()), Hand.createHand(Visibility.COMPLETE, HandType.OWN));
         });
-        turn.setDealerHand(getNCardFromReserve(2, turn.getReserve()), handFactory.createHand(HandFactory.HandType.DEALER));
+        turn.setDealerHand(getNCardFromReserve(2, turn.getReserve()), Hand.createHand(Visibility.PARTIAL, HandType.DEALER));
     }
 
     private List<Card> getNCardFromReserve(int n, List<Card> reserve) {
@@ -70,14 +68,26 @@ public class Dealer {
 
     private void invitePlayersToPlayHand(Turn turn) {
         List<PlayerTurn> playerTurns = turn.getPlayerTurns();
+        //Remake it with Deque//
         playerTurns.forEach(playerTurn -> {
-            Player player = playerTurn.getPlayer();
-            Action playerAction = player.pickAction();
-            playerAction.execute(playerTurn, turn.getReserve(), this::getNCardFromReserve);
-
+            registerPlay(turn, playerTurn);
         });
+
     }
 
+    private void registerPlay(Turn turn, PlayerTurn playerTurn) {
+        Action playerAction;
+        Player player = playerTurn.getPlayer();
+        do {
+            playerAction = player.pickAction();
+            validateAction(playerAction, playerTurn);
+        } while (!playerAction.execute(turn, turn.getReserve(), playerTurn, this::getNCardFromReserve));
+    }
+
+    private void validateAction(Action playerAction, PlayerTurn playerTurn) throws IllegalActionException {
+
+
+    }
 
     public Game getGame() {
         return game;

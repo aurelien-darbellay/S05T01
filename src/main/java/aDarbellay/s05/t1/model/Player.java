@@ -4,8 +4,6 @@ import aDarbellay.s05.t1.model.actions.Action;
 
 public interface Player {
 
-    boolean isSelf();
-
     void placeBet(PlayerTurn playerTurn);
 
     Action pickAction();
