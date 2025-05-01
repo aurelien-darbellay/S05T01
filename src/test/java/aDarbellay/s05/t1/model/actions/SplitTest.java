@@ -14,14 +14,19 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class SplitTest {
 
-    class MockPlayer implements Player {
+    static class MockPlayer implements Player {
         @Override
-        public void placeBet(PlayerTurn playerTurn) {
+        public void placeBet(PlayerTurn playerTurn, int bet) {
         }
 
         @Override
-        public Action pickAction() {
+        public Action pickAction(ActionType actionType) {
             return null;
+        }
+
+        @Override
+        public boolean isInteractive() {
+            return false;
         }
     }
 

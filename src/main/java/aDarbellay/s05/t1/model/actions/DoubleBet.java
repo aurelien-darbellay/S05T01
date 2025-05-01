@@ -8,7 +8,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class Double implements Action {
+public class DoubleBet implements Action {
     private List<Card> drawnCard;
 
     @Override

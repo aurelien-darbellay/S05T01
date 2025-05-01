@@ -11,6 +11,24 @@ public class Turn {
     private List<PlayerTurn> playerTurns;
     private Hand dealerHand;
     private ArrayList<Card> reserve;
+    private TurnState turnState;
+
+    public enum TurnState {
+        STATE1("Bet placed; cards distributed"),
+        STATE2("Players have chosen action - moving on to revealing the dealer's hand"),
+        STATE3("Turn finished"),
+        ONHOLD("Input from interactive player required to move forward.");
+
+        private final String value;
+
+        TurnState(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 
     public Turn(int id) {
         this.id = id;
@@ -48,5 +66,21 @@ public class Turn {
         this.reserve = new ArrayList<>(reserve);
     }
 
+    public TurnState getTurnState() {
+        return turnState;
+    }
 
+    public void setTurnState(TurnState turnState) {
+        this.turnState = turnState;
+    }
+
+    @Override
+    public String toString() {
+        return "Turn{" +
+                "id=" + id +
+                ", playerTurns=" + playerTurns +
+                ", dealerHand=" + dealerHand +
+                ", turnState =" + turnState.getValue() +
+                '}';
+    }
 }

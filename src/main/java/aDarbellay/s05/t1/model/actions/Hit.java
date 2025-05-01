@@ -19,4 +19,10 @@ public class Hit implements Action {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "Hit{" +
+                "drawnCard=" + drawnCard +
+                '}';
+    }
 }

@@ -6,8 +6,11 @@ import java.util.List;
 
 @Document
 public class Game {
+
+    private String id;
     private List<Player> players;
     private List<Turn> turnsPlayed;
+    private Turn activeTurn;
 
     public List<Turn> getTurnsPlayed() {
         return turnsPlayed;
@@ -23,6 +26,22 @@ public class Game {
 
     public void setPlayers(List<Player> players) {
         this.players = players;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Turn getActiveTurn() {
+        return activeTurn;
+    }
+
+    public void setActiveTurn(Turn activeTurn) {
+        this.activeTurn = activeTurn;
     }
 
     @Override

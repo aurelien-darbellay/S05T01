@@ -1,36 +1,37 @@
-package aDarbellay.s05.t1.model;
+package aDarbellay.s05.t1.service;
 
-import aDarbellay.s05.t1.exception.IllegalActionException;
+import aDarbellay.s05.t1.model.*;
 import aDarbellay.s05.t1.model.actions.Action;
+import aDarbellay.s05.t1.model.actions.ActionType;
+import aDarbellay.s05.t1.model.actions.DoubleBet;
+import aDarbellay.s05.t1.model.actions.Stand;
 import aDarbellay.s05.t1.model.hands.Hand;
 import aDarbellay.s05.t1.model.hands.Hand.Visibility;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-
+@Service
 public class Dealer {
 
-    private final Game game;
     private boolean gameOn;
-    private List<Card> fullDeck;
+    private Deck fullDeck;
+    final private DealingValidation dealingValidation;
 
-    public Dealer(Game game, List<Card> fullDeck) {
-        this.game = game;
+    public Dealer(Deck fullDeck, DealingValidation dealingValidation) {
         this.gameOn = false;
         this.fullDeck = fullDeck;
+        this.dealingValidation = dealingValidation;
     }
 
-    public Turn runTurn() {
+    public Turn startTurn(Game game, int bet) {
+        //Should I validate that there isn't already a turn going on//
         setGameOn(true);
-        List<Player> players = game.getPlayers();
         Turn newTurn = initializeNewTurn(game);
-        takeBets(newTurn);
+        game.setActiveTurn(newTurn);
+        takeBets(newTurn, bet);
         distributeCard(newTurn);
-        invitePlayersToPlayHand(newTurn);
-        revealDealerHand(newTurn);
-        calculateResults(newTurn);
-        game.getTurnsPlayed().add(newTurn);
-        setGameOn(false);
+        newTurn.setTurnState(Turn.TurnState.STATE1);
         return newTurn;
     }
 
@@ -45,8 +46,8 @@ public class Dealer {
         return players.stream().map(player -> new PlayerTurn(turn.getId(), player)).toList();
     }
 
-    private void takeBets(Turn turn) {
-        turn.getPlayerTurns().forEach(playerTurn -> playerTurn.getPlayer().placeBet(playerTurn));
+    private void takeBets(Turn turn, int bet) {
+        turn.getPlayerTurns().forEach(playerTurn -> playerTurn.getPlayer().placeBet(playerTurn, bet));
     }
 
     private void distributeCard(Turn turn) {
@@ -64,29 +65,61 @@ public class Dealer {
         return drawnCards;
     }
 
-    private void invitePlayersToPlayHand(Turn turn) {
+
+    public Turn playTurn(Game game, ActionType actionType) {
+        Turn activeTurn = game.getActiveTurn();
+        invitePlayersToPlayHand(activeTurn, actionType);
+        if (activeTurn.getTurnState().equals(Turn.TurnState.STATE2)) {
+            revealDealerHand(activeTurn);
+            calculateResults(activeTurn);
+            setGameOn(false);
+            activeTurn.setTurnState(Turn.TurnState.STATE3);
+        }
+        return activeTurn;
+    }
+
+
+    private void invitePlayersToPlayHand(Turn turn, ActionType actionType) {
         Deque<PlayerTurn> playsToRegister = new ArrayDeque<>(turn.getPlayerTurns());
 
         while (!playsToRegister.isEmpty()) {
             PlayerTurn playerTurn = playsToRegister.pop();
-            registerPlay(turn, playerTurn, playsToRegister);
+            if (isActionRequired(playerTurn)) {
+                registerPlay(turn, playerTurn, playsToRegister, actionType);
+                if (isInputRequired(turn)) return;
+            }
         }
-
+        turn.setTurnState(Turn.TurnState.STATE2);
     }
 
-    private void registerPlay(Turn turn, PlayerTurn playerTurn, Deque<PlayerTurn> turnsToPlay) {
+    private void registerPlay(Turn turn, PlayerTurn playerTurn, Deque<PlayerTurn> turnsToPlay, ActionType actionType) {
         Action playerAction;
         Player player = playerTurn.getPlayer();
         do {
-            playerAction = player.pickAction();
-            validateAction(playerAction, playerTurn);
-        } while (!playerAction.execute(turn, turnsToPlay, playerTurn, this::getNCardFromReserve) && playerTurn.getHand().getHandValue() < 21);
+            playerAction = player.pickAction(actionType);
+            dealingValidation.validateAction(playerAction, playerTurn);
+            playerAction.execute(turn, turnsToPlay, playerTurn, this::getNCardFromReserve);
+            if (isInputRequired(playerTurn)) {
+                turn.setTurnState(Turn.TurnState.ONHOLD);
+                return;
+            }
+        } while (isActionRequired(playerTurn));
     }
 
-    private void validateAction(Action playerAction, PlayerTurn playerTurn) throws IllegalActionException {
-
-
+    private boolean isActionRequired(PlayerTurn playerTurn) {
+        return (playerTurn.getHand().getHandValue() < 21
+                && playerTurn.getActions().stream().noneMatch(a -> a instanceof Stand || a instanceof DoubleBet)
+        );
     }
+
+    private boolean isInputRequired(Turn turn) {
+        return turn.getTurnState().equals(Turn.TurnState.ONHOLD);
+    }
+
+    private boolean isInputRequired(PlayerTurn playerTurn) {
+        return isActionRequired(playerTurn) && playerTurn.getPlayer().isInteractive();
+    }
+
 
     private void revealDealerHand(Turn turn) {
         Hand dealerHand = turn.getDealerHand();
@@ -131,9 +164,6 @@ public class Dealer {
         else playerTurn.setResult(PlayerTurn.ResultType.PUSH);
     }
 
-    public Game getGame() {
-        return game;
-    }
 
     public boolean isGameOn() {
         return gameOn;
@@ -147,7 +177,7 @@ public class Dealer {
         return fullDeck;
     }
 
-    public void setFullDeck(List<Card> fullDeck) {
+    public void setFullDeck(Deck fullDeck) {
         this.fullDeck = fullDeck;
     }
 

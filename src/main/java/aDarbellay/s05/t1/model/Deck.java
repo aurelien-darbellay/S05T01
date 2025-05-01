@@ -1,8 +1,11 @@
 package aDarbellay.s05.t1.model;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class Deck extends ArrayList<Card> {
 
     private static List<String> CARDLIST = List.of(
@@ -12,7 +15,7 @@ public class Deck extends ArrayList<Card> {
             "SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "SJ", "SQ", "SK"
     );
 
-    public Deck(){
+    public Deck() {
         CARDLIST.forEach(value -> this.add(new Card(value)));
     }
 }
