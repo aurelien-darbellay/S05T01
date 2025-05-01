@@ -69,7 +69,7 @@ public class Dealer {
     public Turn playTurn(Game game, ActionType actionType) {
         Turn activeTurn = game.getActiveTurn();
         invitePlayersToPlayHand(activeTurn, actionType);
-        if (activeTurn.getTurnState().equals(Turn.TurnState.HANDS_PLAYER)) {
+        if (activeTurn.getTurnState().equals(Turn.TurnState.HANDS_PLAYED)) {
             revealDealerHand(activeTurn);
             calculateResults(activeTurn);
             setGameOn(false);
@@ -89,7 +89,7 @@ public class Dealer {
                 if (isInputRequired(turn)) return;
             }
         }
-        turn.setTurnState(Turn.TurnState.HANDS_PLAYER);
+        turn.setTurnState(Turn.TurnState.HANDS_PLAYED);
     }
 
     private void registerPlay(Turn turn, PlayerTurn playerTurn, Deque<PlayerTurn> turnsToPlay, ActionType actionType) {

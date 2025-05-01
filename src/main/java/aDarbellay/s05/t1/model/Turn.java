@@ -15,7 +15,7 @@ public class Turn {
 
     public enum TurnState {
         HANDS_DISTRIBUTED("Bet placed; cards distributed"),
-        HANDS_PLAYER("Players have chosen action - moving on to revealing the dealer's hand"),
+        HANDS_PLAYED("Players have chosen action - moving on to revealing the dealer's hand"),
         TURN_FINISHED("Turn finished"),
         ONHOLD("Input from interactive player required to move forward.");
 
