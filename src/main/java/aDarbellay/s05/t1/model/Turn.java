@@ -36,8 +36,7 @@ public class Turn {
         return dealerHand;
     }
 
-    public void setDealerHand(List<Card> cards, Hand dealerHand) {
-        dealerHand.addAll(cards);
+    public void setDealerHand(Hand dealerHand) {
         this.dealerHand = dealerHand;
     }
 

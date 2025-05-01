@@ -3,6 +3,7 @@ package aDarbellay.s05.t1.model.hands;
 import aDarbellay.s05.t1.model.Card;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Hand extends ArrayList<Card> {
 
@@ -11,13 +12,22 @@ public class Hand extends ArrayList<Card> {
     }
 
     public enum HandType {
-        OWN, DEALER
+        PLAYER, DEALER
     }
 
-    public static Hand createHand(Visibility visibility, HandType handType) {
+    public static Hand createPlayerHand(List<Card> cards) {
         Hand newHand = new Hand();
-        newHand.setVisibility(visibility);
-        newHand.setHandType(handType);
+        newHand.setVisibility(Visibility.COMPLETE);
+        newHand.setHandType(HandType.PLAYER);
+        newHand.addAll(cards);
+        return newHand;
+    }
+
+    public static Hand createDealerHand(List<Card> cards) {
+        Hand newHand = new Hand();
+        newHand.setVisibility(Visibility.PARTIAL);
+        newHand.setHandType(HandType.DEALER);
+        newHand.addAll(cards);
         return newHand;
     }
 
@@ -35,6 +45,19 @@ public class Hand extends ArrayList<Card> {
         return this.stream().anyMatch(card -> card.getValue().contains("A"));
     }
 
+    @Override
+    public String toString() {
+        StringBuilder handSummary = new StringBuilder();
+        this.forEach(card -> {
+            handSummary.append(card.toString()).append(" ");
+        });
+        return "Hand{" +
+                "visibility=" + visibility +
+                ", handType=" + handType +
+                ",cards=" + handSummary +
+                '}';
+    }
+
     public Visibility getVisibility() {
         return visibility;
     }
@@ -50,4 +73,5 @@ public class Hand extends ArrayList<Card> {
     public void setHandType(HandType handType) {
         this.handType = handType;
     }
+
 }

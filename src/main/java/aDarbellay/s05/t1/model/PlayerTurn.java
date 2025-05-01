@@ -3,26 +3,38 @@ package aDarbellay.s05.t1.model;
 import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.hands.Hand;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerTurn {
+
+    public enum ResultType {
+        WIN, LOSS, PUSH
+    }
 
     private int turn;
     private Player player;
     private int bet;
     private List<Action> actions;
     private Hand hand;
-    private boolean issuedFromSplit;
-    private boolean issuedFromDoubleSplit;
-    private boolean issuedFromTripleSplit;
-    private boolean result;
+    private ResultType result;
 
     public PlayerTurn(int turn, Player player) {
         this.turn = turn;
         this.player = player;
-        this.issuedFromSplit = false;
-        this.issuedFromDoubleSplit = false;
-        this.issuedFromTripleSplit = false;
+        this.actions = new ArrayList<Action>();
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerTurn{" +
+                "turn=" + turn +
+                ", player=" + player +
+                ", bet=" + bet +
+                ", actions=" + actions +
+                ", hand=" + hand +
+                ", result=" + result +
+                '}';
     }
 
     public int getTurn() {
@@ -61,42 +73,16 @@ public class PlayerTurn {
         return hand;
     }
 
-    public void setHand(List<Card> cards, Hand hand) {
-        hand.addAll(cards);
+    public void setHand(Hand hand) {
         this.hand = hand;
     }
 
-    public boolean isResult() {
+    public ResultType getResult() {
         return result;
     }
 
-    public void setResult(boolean result) {
+    public void setResult(ResultType result) {
         this.result = result;
     }
 
-    public boolean isIssuedFromSplit() {
-        return issuedFromSplit;
-    }
-
-    public void setIssuedFromSplit(boolean issuedFromSplit) {
-        this.issuedFromSplit = issuedFromSplit;
-    }
-
-    public boolean isIssuedFromDoubleSplit() {
-        return issuedFromDoubleSplit;
-    }
-
-    public void setIssuedFromDoubleSplit(boolean issuedFromDoubleSplit) {
-        this.issuedFromDoubleSplit = issuedFromDoubleSplit;
-        if (issuedFromDoubleSplit) this.setIssuedFromSplit(true);
-    }
-
-    public boolean isIssuedFromTripleSplit() {
-        return issuedFromTripleSplit;
-    }
-
-    public void setIssuedFromTripleSplit(boolean issuedFromTripleSplit) {
-        this.issuedFromTripleSplit = issuedFromTripleSplit;
-        if (issuedFromTripleSplit) this.setIssuedFromDoubleSplit(true);
-    }
 }

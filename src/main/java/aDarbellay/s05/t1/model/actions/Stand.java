@@ -11,8 +11,13 @@ import java.util.function.BiFunction;
 public class Stand implements Action {
 
     @Override
-    public boolean execute(Turn turn, List<Card> reserve, Deque<PlayerTurn> turnsToPlay, PlayerTurn playerTurn, BiFunction<Integer, List<Card>, List<Card>> biFunction) {
-        playerTurn.getActions().add(this);
+    public boolean execute(Turn turn, Deque<PlayerTurn> turnsToPlay, PlayerTurn playerTurn, BiFunction<Integer, List<Card>, List<Card>> biFunction) {
+        addActionToTurn(playerTurn);
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Stand{}";
     }
 }

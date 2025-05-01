@@ -9,5 +9,10 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 public interface Action {
-    boolean execute(Turn turn, List<Card> reserve, Deque<PlayerTurn> turnsToPlay, PlayerTurn playerTurn, BiFunction<Integer, List<Card>, List<Card>> biFunction);
+
+    default void addActionToTurn(PlayerTurn playerTurn) {
+        playerTurn.getActions().add(this);
+    }
+
+    boolean execute(Turn turn, Deque<PlayerTurn> turnsToPlay, PlayerTurn playerTurn, BiFunction<Integer, List<Card>, List<Card>> biFunction);
 }

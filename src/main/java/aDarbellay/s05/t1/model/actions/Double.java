@@ -12,11 +12,18 @@ public class Double implements Action {
     private List<Card> drawnCard;
 
     @Override
-    public boolean execute(Turn turn, List<Card> reserve, Deque<PlayerTurn> turnsToPlay, PlayerTurn playerTurn, BiFunction<Integer, List<Card>, List<Card>> biFunction) {
-        drawnCard = biFunction.apply(1, reserve);
+    public boolean execute(Turn turn, Deque<PlayerTurn> turnsToPlay, PlayerTurn playerTurn, BiFunction<Integer, List<Card>, List<Card>> biFunction) {
+        addActionToTurn(playerTurn);
+        drawnCard = biFunction.apply(1, turn.getReserve());
         playerTurn.getHand().addAll(drawnCard);
         playerTurn.setBet(playerTurn.getBet() * 2);
-        playerTurn.getActions().add(this);
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Double{" +
+                "drawnCard=" + drawnCard +
+                '}';
     }
 }

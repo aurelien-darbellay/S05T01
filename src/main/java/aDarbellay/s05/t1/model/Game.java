@@ -24,4 +24,20 @@ public class Game {
     public void setPlayers(List<Player> players) {
         this.players = players;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder turnsSummary = new StringBuilder();
+        turnsPlayed.forEach(turn -> {
+            turnsSummary.append("\n Turn ").append(turn.getId()).append(":\n");
+            turnsSummary.append("Dealer Hand :").append(turn.getDealerHand().toString()).append("\n");
+            turn.getPlayerTurns().forEach(playerTurn -> {
+                turnsSummary.append("\n").append(playerTurn.toString());
+            });
+        });
+        return "Game{" +
+                "players=" + players +
+                ", turnsPlayed=" + turnsSummary +
+                '}';
+    }
 }

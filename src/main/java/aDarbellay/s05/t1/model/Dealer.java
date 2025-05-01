@@ -3,7 +3,6 @@ package aDarbellay.s05.t1.model;
 import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.hands.Hand;
-import aDarbellay.s05.t1.model.hands.Hand.HandType;
 import aDarbellay.s05.t1.model.hands.Hand.Visibility;
 
 import java.util.*;
@@ -28,7 +27,8 @@ public class Dealer {
         takeBets(newTurn);
         distributeCard(newTurn);
         invitePlayersToPlayHand(newTurn);
-
+        revealDealerHand(newTurn);
+        calculateResults(newTurn);
         game.getTurnsPlayed().add(newTurn);
         setGameOn(false);
         return newTurn;
@@ -53,9 +53,9 @@ public class Dealer {
         Collections.shuffle(fullDeck);
         turn.setReserve(fullDeck);
         turn.getPlayerTurns().forEach(playerTurn -> {
-            playerTurn.setHand(getNCardFromReserve(2, turn.getReserve()), Hand.createHand(Visibility.COMPLETE, HandType.OWN));
+            playerTurn.setHand(Hand.createPlayerHand(getNCardFromReserve(2, turn.getReserve())));
         });
-        turn.setDealerHand(getNCardFromReserve(2, turn.getReserve()), Hand.createHand(Visibility.PARTIAL, HandType.DEALER));
+        turn.setDealerHand(Hand.createDealerHand(getNCardFromReserve(2, turn.getReserve())));
     }
 
     private List<Card> getNCardFromReserve(int n, List<Card> reserve) {
@@ -65,27 +65,70 @@ public class Dealer {
     }
 
     private void invitePlayersToPlayHand(Turn turn) {
-        Deque<PlayerTurn> turnsToPlay = new ArrayDeque<>(turn.getPlayerTurns());
-        //Remake it with Deque//
-        while (!turnsToPlay.isEmpty()) {
-            PlayerTurn playerTurn = turnsToPlay.pop();
-            registerPlay(turn,playerTurn,turnsToPlay);
+        Deque<PlayerTurn> playsToRegister = new ArrayDeque<>(turn.getPlayerTurns());
+
+        while (!playsToRegister.isEmpty()) {
+            PlayerTurn playerTurn = playsToRegister.pop();
+            registerPlay(turn, playerTurn, playsToRegister);
         }
 
     }
 
-    private void registerPlay(Turn turn, PlayerTurn playerTurn,Deque<PlayerTurn> turnsToPlay) {
+    private void registerPlay(Turn turn, PlayerTurn playerTurn, Deque<PlayerTurn> turnsToPlay) {
         Action playerAction;
         Player player = playerTurn.getPlayer();
         do {
             playerAction = player.pickAction();
             validateAction(playerAction, playerTurn);
-        } while (!playerAction.execute(, turn.getReserve(), , playerTurn, this::getNCardFromReserve));
+        } while (!playerAction.execute(turn, turnsToPlay, playerTurn, this::getNCardFromReserve) && playerTurn.getHand().getHandValue() < 21);
     }
 
     private void validateAction(Action playerAction, PlayerTurn playerTurn) throws IllegalActionException {
 
 
+    }
+
+    private void revealDealerHand(Turn turn) {
+        Hand dealerHand = turn.getDealerHand();
+        dealerHand.setVisibility(Visibility.COMPLETE);
+        while (dealerHand.getHandValue() < 17) {
+            Card newCard = getNCardFromReserve(1, turn.getReserve()).getFirst();
+            dealerHand.add(newCard);
+        }
+    }
+
+    private void calculateResults(Turn turn) {
+        int dealerPoints = turn.getDealerHand().getHandValue();
+        turn.getPlayerTurns().forEach(playerTurn -> {
+            int playerPoints = playerTurn.getHand().getHandValue();
+            if (playerPoints > 21) playerTurn.setResult(PlayerTurn.ResultType.LOSS);
+            else if (dealerPoints > 21) playerTurn.setResult(PlayerTurn.ResultType.WIN);
+            else {
+                setResultIfNoneBust(playerPoints, dealerPoints, playerTurn, turn);
+            }
+        });
+    }
+
+    private void setResultIfNoneBust(int playerPoints, int dealerPoints, PlayerTurn playerTurn, Turn turn) {
+        switch (Integer.signum(playerPoints - dealerPoints)) {
+            case 1:
+                playerTurn.setResult(PlayerTurn.ResultType.WIN);
+                break;
+            case -1:
+                playerTurn.setResult(PlayerTurn.ResultType.LOSS);
+                break;
+            case 0:
+                setResultByHandSize(playerTurn, turn.getDealerHand());
+                break;
+        }
+    }
+
+    private void setResultByHandSize(PlayerTurn playerTurn, Hand dealerHand) {
+        if (playerTurn.getHand().size() == 2) {
+            if (dealerHand.size() == 2) playerTurn.setResult(PlayerTurn.ResultType.PUSH);
+            else playerTurn.setResult(PlayerTurn.ResultType.WIN);
+        } else if (dealerHand.size() == 2) playerTurn.setResult(PlayerTurn.ResultType.LOSS);
+        else playerTurn.setResult(PlayerTurn.ResultType.PUSH);
     }
 
     public Game getGame() {
