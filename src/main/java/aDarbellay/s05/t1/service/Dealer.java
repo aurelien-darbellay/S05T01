@@ -31,7 +31,7 @@ public class Dealer {
         game.setActiveTurn(newTurn);
         takeBets(newTurn, bet);
         distributeCard(newTurn);
-        newTurn.setTurnState(Turn.TurnState.STATE1);
+        newTurn.setTurnState(Turn.TurnState.HANDS_DISTRIBUTED);
         return newTurn;
     }
 
@@ -69,11 +69,11 @@ public class Dealer {
     public Turn playTurn(Game game, ActionType actionType) {
         Turn activeTurn = game.getActiveTurn();
         invitePlayersToPlayHand(activeTurn, actionType);
-        if (activeTurn.getTurnState().equals(Turn.TurnState.STATE2)) {
+        if (activeTurn.getTurnState().equals(Turn.TurnState.HANDS_PLAYER)) {
             revealDealerHand(activeTurn);
             calculateResults(activeTurn);
             setGameOn(false);
-            activeTurn.setTurnState(Turn.TurnState.STATE3);
+            activeTurn.setTurnState(Turn.TurnState.TURN_FINISHED);
         }
         return activeTurn;
     }
@@ -89,7 +89,7 @@ public class Dealer {
                 if (isInputRequired(turn)) return;
             }
         }
-        turn.setTurnState(Turn.TurnState.STATE2);
+        turn.setTurnState(Turn.TurnState.HANDS_PLAYER);
     }
 
     private void registerPlay(Turn turn, PlayerTurn playerTurn, Deque<PlayerTurn> turnsToPlay, ActionType actionType) {

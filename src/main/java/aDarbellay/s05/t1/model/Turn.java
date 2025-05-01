@@ -14,9 +14,9 @@ public class Turn {
     private TurnState turnState;
 
     public enum TurnState {
-        STATE1("Bet placed; cards distributed"),
-        STATE2("Players have chosen action - moving on to revealing the dealer's hand"),
-        STATE3("Turn finished"),
+        HANDS_DISTRIBUTED("Bet placed; cards distributed"),
+        HANDS_PLAYER("Players have chosen action - moving on to revealing the dealer's hand"),
+        TURN_FINISHED("Turn finished"),
         ONHOLD("Input from interactive player required to move forward.");
 
         private final String value;
