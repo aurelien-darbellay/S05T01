@@ -1,4 +1,4 @@
-package aDarbellay.s05.t1.model;
+package aDarbellay.s05.t1.model.cards;
 
 public class Card {
     private String value;

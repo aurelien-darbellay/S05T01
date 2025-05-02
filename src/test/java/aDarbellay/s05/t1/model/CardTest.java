@@ -1,5 +1,6 @@
 package aDarbellay.s05.t1.model;
 
+import aDarbellay.s05.t1.model.cards.Card;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

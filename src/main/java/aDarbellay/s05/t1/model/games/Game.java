@@ -1,5 +1,7 @@
-package aDarbellay.s05.t1.model;
+package aDarbellay.s05.t1.model.games;
 
+import aDarbellay.s05.t1.model.Player;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.List;
 @Document
 public class Game {
 
+    @Id
     private String id;
     private List<Player> players;
     private List<Turn> turnsPlayed;
@@ -46,17 +49,14 @@ public class Game {
 
     @Override
     public String toString() {
-        StringBuilder turnsSummary = new StringBuilder();
+        /*StringBuilder turnsSummary = new StringBuilder();
         turnsPlayed.forEach(turn -> {
             turnsSummary.append("\n Turn ").append(turn.getId()).append(":\n");
             turnsSummary.append("Dealer Hand :").append(turn.getDealerHand().toString()).append("\n");
             turn.getPlayerTurns().forEach(playerTurn -> {
                 turnsSummary.append("\n").append(playerTurn.toString());
             });
-        });
-        return "Game{" +
-                "players=" + players +
-                ", turnsPlayed=" + turnsSummary +
-                '}';
+        });*/
+        return "Game{}";
     }
 }

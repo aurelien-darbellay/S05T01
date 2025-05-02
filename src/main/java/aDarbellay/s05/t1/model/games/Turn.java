@@ -1,5 +1,6 @@
-package aDarbellay.s05.t1.model;
+package aDarbellay.s05.t1.model.games;
 
+import aDarbellay.s05.t1.model.cards.Card;
 import aDarbellay.s05.t1.model.hands.Hand;
 
 import java.util.ArrayList;

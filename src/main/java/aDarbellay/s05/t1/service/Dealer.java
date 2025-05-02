@@ -1,12 +1,18 @@
 package aDarbellay.s05.t1.service;
 
-import aDarbellay.s05.t1.model.*;
+import aDarbellay.s05.t1.model.Player;
 import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.actions.ActionType;
 import aDarbellay.s05.t1.model.actions.DoubleBet;
 import aDarbellay.s05.t1.model.actions.Stand;
+import aDarbellay.s05.t1.model.cards.Card;
+import aDarbellay.s05.t1.model.cards.Deck;
+import aDarbellay.s05.t1.model.games.Game;
+import aDarbellay.s05.t1.model.games.PlayerTurn;
+import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.model.hands.Hand;
 import aDarbellay.s05.t1.model.hands.Hand.Visibility;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,6 +24,7 @@ public class Dealer {
     private Deck fullDeck;
     final private DealingValidation dealingValidation;
 
+    @Autowired
     public Dealer(Deck fullDeck, DealingValidation dealingValidation) {
         this.gameOn = false;
         this.fullDeck = fullDeck;

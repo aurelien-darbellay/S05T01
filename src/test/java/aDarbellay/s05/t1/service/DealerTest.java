@@ -1,9 +1,15 @@
 package aDarbellay.s05.t1.service;
 
-import aDarbellay.s05.t1.model.*;
-import aDarbellay.s05.t1.model.actions.*;
+
+import aDarbellay.s05.t1.model.actions.ActionType;
+import aDarbellay.s05.t1.model.cards.Deck;
+import aDarbellay.s05.t1.model.games.Game;
+import aDarbellay.s05.t1.model.games.Turn;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import testClasses.CautiousPlayer;
+import testClasses.InteractivePlayer;
+import testClasses.RandomPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,84 +19,11 @@ class DealerTest {
     static Game game;
     static Deck fullDeck;
 
-    static class CautiousPLayer implements Player {
-        @Override
-        public String toString() {
-            return "CautiousPLayer{}";
-        }
-
-        @Override
-        public void placeBet(PlayerTurn playerTurn, int bet) {
-            playerTurn.setBet(2);
-        }
-
-        @Override
-        public Action pickAction(ActionType actionType) {
-            return new Stand();
-        }
-
-        @Override
-        public boolean isInteractive() {
-            return false;
-        }
-    }
-
-    static class RandomPlayer implements Player {
-
-        @Override
-        public void placeBet(PlayerTurn playerTurn, int bet) {
-            playerTurn.setBet((int) Math.floor(Math.random() * 50));
-        }
-
-        @Override
-        public Action pickAction(ActionType actionType) {
-            return Math.random() < 0.5 ? new Stand() : new Hit();
-        }
-
-        @Override
-        public boolean isInteractive() {
-            return false;
-        }
-
-        @Override
-        public String toString() {
-            return "RandomPlayer{}";
-        }
-    }
-
-    static class InteractivePlayer implements Player {
-
-        @Override
-        public void placeBet(PlayerTurn playerTurn, int quantity) {
-
-        }
-
-        @Override
-        public Action pickAction(ActionType actionType) {
-            return switch (actionType) {
-                case HIT -> new Hit();
-                case SPLIT -> new Split();
-                case STAND -> new Stand();
-                case DOUBLE -> new DoubleBet();
-            };
-        }
-
-        @Override
-        public boolean isInteractive() {
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return "InteractivePlayer{}";
-        }
-    }
-
     @BeforeAll
     static void setUp() {
         game = new Game();
         fullDeck = new Deck();
-        game.setPlayers(List.of(new CautiousPLayer(), new RandomPlayer()));
+        game.setPlayers(List.of(new CautiousPlayer(), new RandomPlayer()));
         game.setTurnsPlayed(new ArrayList<>());
 
     }

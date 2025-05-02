@@ -1,8 +1,8 @@
 package aDarbellay.s05.t1.model.actions;
 
-import aDarbellay.s05.t1.model.Card;
-import aDarbellay.s05.t1.model.PlayerTurn;
-import aDarbellay.s05.t1.model.Turn;
+import aDarbellay.s05.t1.model.cards.Card;
+import aDarbellay.s05.t1.model.games.PlayerTurn;
+import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.model.hands.Hand;
 
 import java.util.Deque;

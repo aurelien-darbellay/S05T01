@@ -1,6 +1,6 @@
 package aDarbellay.s05.t1.model.hands;
 
-import aDarbellay.s05.t1.model.Card;
+import aDarbellay.s05.t1.model.cards.Card;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
