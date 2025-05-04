@@ -20,20 +20,17 @@ import java.util.*;
 @Service
 public class Dealer {
 
-    private boolean gameOn;
     private Deck fullDeck;
     final private DealingValidation dealingValidation;
 
     @Autowired
     public Dealer(Deck fullDeck, DealingValidation dealingValidation) {
-        this.gameOn = false;
         this.fullDeck = fullDeck;
         this.dealingValidation = dealingValidation;
     }
 
     public Turn startTurn(Game game, int bet) {
         //Should I validate that there isn't already a turn going on//
-        setGameOn(true);
         Turn newTurn = initializeNewTurn(game);
         game.setActiveTurn(newTurn);
         takeBets(newTurn, bet);
@@ -72,19 +69,16 @@ public class Dealer {
         return drawnCards;
     }
 
-
     public Turn playTurn(Game game, ActionType actionType) {
         Turn activeTurn = game.getActiveTurn();
         invitePlayersToPlayHand(activeTurn, actionType);
         if (activeTurn.getTurnState().equals(Turn.TurnState.HANDS_PLAYED)) {
             revealDealerHand(activeTurn);
             calculateResults(activeTurn);
-            setGameOn(false);
             activeTurn.setTurnState(Turn.TurnState.TURN_FINISHED);
         }
         return activeTurn;
     }
-
 
     private void invitePlayersToPlayHand(Turn turn, ActionType actionType) {
         Deque<PlayerTurn> playsToRegister = new ArrayDeque<>(turn.getPlayerTurns());
@@ -127,7 +121,6 @@ public class Dealer {
         return isActionRequired(playerTurn) && playerTurn.getPlayer().isInteractive();
     }
 
-
     private void revealDealerHand(Turn turn) {
         Hand dealerHand = turn.getDealerHand();
         dealerHand.setVisibility(Visibility.COMPLETE);
@@ -169,15 +162,6 @@ public class Dealer {
             else playerTurn.setResult(PlayerTurn.ResultType.WIN);
         } else if (dealerHand.size() == 2) playerTurn.setResult(PlayerTurn.ResultType.LOSS);
         else playerTurn.setResult(PlayerTurn.ResultType.PUSH);
-    }
-
-
-    public boolean isGameOn() {
-        return gameOn;
-    }
-
-    public void setGameOn(boolean gameOn) {
-        this.gameOn = gameOn;
     }
 
     public List<Card> getFullDeck() {
