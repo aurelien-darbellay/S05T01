@@ -9,10 +9,11 @@ import java.util.List;
 public class Turn {
 
     private int id;
-    private List<PlayerTurn> playerTurns;
+    private List<PlayerStrategy> playerStrategies;
     private Hand dealerHand;
     private ArrayList<Card> reserve;
     private TurnState turnState;
+    private String gameId;
 
     public enum TurnState {
         HANDS_DISTRIBUTED("Bet placed; cards distributed"),
@@ -43,12 +44,12 @@ public class Turn {
         this.id = id;
     }
 
-    public List<PlayerTurn> getPlayerTurns() {
-        return playerTurns;
+    public List<PlayerStrategy> getPlayerStrategies() {
+        return playerStrategies;
     }
 
-    public void setPlayerTurns(List<PlayerTurn> playerTurns) {
-        this.playerTurns = playerTurns;
+    public void setPlayerStrategies(List<PlayerStrategy> playerStrategies) {
+        this.playerStrategies = playerStrategies;
     }
 
     public Hand getDealerHand() {
@@ -75,11 +76,19 @@ public class Turn {
         this.turnState = turnState;
     }
 
+    public String getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
+
     @Override
     public String toString() {
         return "Turn{" +
                 "id=" + id +
-                ", playerTurns=" + playerTurns +
+                ", playerStrategies=" + playerStrategies +
                 ", dealerHand=" + dealerHand +
                 ", turnState =" + turnState.getValue() +
                 '}';

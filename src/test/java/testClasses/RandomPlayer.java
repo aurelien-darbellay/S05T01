@@ -5,13 +5,13 @@ import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.actions.ActionType;
 import aDarbellay.s05.t1.model.actions.Hit;
 import aDarbellay.s05.t1.model.actions.Stand;
-import aDarbellay.s05.t1.model.games.PlayerTurn;
+import aDarbellay.s05.t1.model.games.PlayerStrategy;
 
 public class RandomPlayer implements Player {
 
     @Override
-    public void placeBet(PlayerTurn playerTurn, int bet) {
-        playerTurn.setBet((int) Math.floor(Math.random() * 50));
+    public void placeBet(PlayerStrategy playerStrategy, int bet) {
+        playerStrategy.setBet((int) Math.floor(Math.random() * 50));
     }
 
     @Override

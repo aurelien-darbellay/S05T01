@@ -4,7 +4,7 @@ import aDarbellay.s05.t1.model.Player;
 import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.actions.ActionType;
 import aDarbellay.s05.t1.model.actions.Stand;
-import aDarbellay.s05.t1.model.games.PlayerTurn;
+import aDarbellay.s05.t1.model.games.PlayerStrategy;
 
 public class CautiousPlayer implements Player {
     @Override
@@ -13,8 +13,8 @@ public class CautiousPlayer implements Player {
     }
 
     @Override
-    public void placeBet(PlayerTurn playerTurn, int bet) {
-        playerTurn.setBet(2);
+    public void placeBet(PlayerStrategy playerStrategy, int bet) {
+        playerStrategy.setBet(2);
     }
 
     @Override

@@ -59,4 +59,8 @@ public class Game {
         });*/
         return "Game{}";
     }
+
+    public boolean isGameOn() {
+        return (getActiveTurn() != null);
+    }
 }

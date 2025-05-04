@@ -5,6 +5,7 @@ import aDarbellay.s05.t1.model.cards.Deck;
 import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.repository.GameRepository;
+import aDarbellay.s05.t1.validation.DealingValidation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

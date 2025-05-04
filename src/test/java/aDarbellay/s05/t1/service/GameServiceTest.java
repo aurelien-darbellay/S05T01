@@ -4,6 +4,7 @@ import aDarbellay.s05.t1.exception.EntityNotFoundException;
 import aDarbellay.s05.t1.model.cards.Deck;
 import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.Turn;
+import aDarbellay.s05.t1.validation.DealingValidation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -40,14 +41,14 @@ class GameServiceTest {
     }
 
     @Test
-    void updateGame() {
+    void saveUpdatedGame() {
         Game newGame = new Game();
         newGame.setId("fromService");
-        newGame.setPlayers(List.of(new CautiousPlayer()));
-        newGame.setTurnsPlayed(List.of(new Turn(1)));
-        Mono<Game> result = gameService.updateGame("fromService", newGame)
+        newGame.setPlayers(List.of(new CautiousPlayer(), new RandomPlayer()));
+        newGame.setTurnsPlayed(List.of(new Turn(1), new Turn(2)));
+        Mono<Game> result = gameService.saveUpdatedGame("fromService", newGame)
                 .doOnNext(game -> System.out.println(game.toString()));
-        StepVerifier.create(result).expectNextMatches(game -> game.getTurnsPlayed().size() == 1 && game.getPlayers().getFirst() instanceof CautiousPlayer).verifyComplete();
+        StepVerifier.create(result).expectNextMatches(game -> game.getTurnsPlayed().size() == 2 && game.getPlayers().getFirst() instanceof CautiousPlayer).verifyComplete();
     }
 
     @Test

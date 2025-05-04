@@ -16,15 +16,15 @@ public class GameManager {
         this.activeGames = emptyMap;
     }
 
-    public void loadGame(Game game) {
+    public void cacheGame(Game game) {
         activeGames.put(game.getId(), game);
     }
 
-    public Game getGameById(String id) {
+    public Game getGameFromCache(String id) {
         return activeGames.get(id);
     }
 
-    public void dropGameById(String id) {
+    public void dropGameFromCache(String id) {
         activeGames.remove(id);
     }
 }

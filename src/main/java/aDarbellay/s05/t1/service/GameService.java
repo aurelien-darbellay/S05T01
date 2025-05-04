@@ -1,12 +1,19 @@
 package aDarbellay.s05.t1.service;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
+import aDarbellay.s05.t1.model.Player;
+import aDarbellay.s05.t1.model.actions.ActionType;
 import aDarbellay.s05.t1.model.games.Game;
+import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class GameService {
@@ -27,11 +34,16 @@ public class GameService {
     }
 
     public Mono<Game> getGameById(String id) {
+        Game cached = gameManager.getGameFromCache(id);
+        if (cached != null) {
+            return Mono.just(cached);
+        }
         return gameRepository.findById(id)
-                .switchIfEmpty(Mono.error(new EntityNotFoundException(Game.class, id)));
+                .switchIfEmpty(Mono.error(new EntityNotFoundException(Game.class, id)))
+                .doOnNext(gameManager::cacheGame);
     }
 
-    public Mono<Game> updateGame(String id, Game updatedGame) {
+    public Mono<Game> saveUpdatedGame(String id, Game updatedGame) {
         return gameRepository.findById(id)
                 .switchIfEmpty(Mono.error(new EntityNotFoundException(Game.class, id)))
                 .map(game -> {
@@ -57,4 +69,22 @@ public class GameService {
         return gameRepository.findAll();
     }
 
+    public Mono<Turn> startNewTurn(String gameId, int bet) {
+        return getGameById(gameId)
+                .map(game -> dealer.startTurn(game, bet));
+    }
+
+    public Mono<Turn> playTurn(String gameId, ActionType action) {
+        return getGameById(gameId)
+                .map(game -> dealer.playTurn(game, action));
+    }
+
+    public Mono<Game> createNewGame(int numPlayers, Player mainPlayer) {
+        List<Player> players = new ArrayList<>();
+        players.add(mainPlayer);
+        Collections.shuffle(players);
+        Game newGame = new Game();
+        newGame.setPlayers(players);
+        return gameRepository.save(newGame);
+    }
 }

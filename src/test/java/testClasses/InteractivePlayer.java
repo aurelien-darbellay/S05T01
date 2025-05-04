@@ -2,12 +2,12 @@ package testClasses;
 
 import aDarbellay.s05.t1.model.Player;
 import aDarbellay.s05.t1.model.actions.*;
-import aDarbellay.s05.t1.model.games.PlayerTurn;
+import aDarbellay.s05.t1.model.games.PlayerStrategy;
 
 public class InteractivePlayer implements Player {
 
     @Override
-    public void placeBet(PlayerTurn playerTurn, int quantity) {
+    public void placeBet(PlayerStrategy playerStrategy, int quantity) {
 
     }
 

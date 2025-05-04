@@ -8,10 +8,11 @@ import aDarbellay.s05.t1.model.actions.Stand;
 import aDarbellay.s05.t1.model.cards.Card;
 import aDarbellay.s05.t1.model.cards.Deck;
 import aDarbellay.s05.t1.model.games.Game;
-import aDarbellay.s05.t1.model.games.PlayerTurn;
+import aDarbellay.s05.t1.model.games.PlayerStrategy;
 import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.model.hands.Hand;
 import aDarbellay.s05.t1.model.hands.Hand.Visibility;
+import aDarbellay.s05.t1.validation.DealingValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,23 +42,24 @@ public class Dealer {
 
     private Turn initializeNewTurn(Game game) {
         Turn newTurn = new Turn(game.getTurnsPlayed().size() + 1);
-        List<PlayerTurn> playerTurns = createPlayerTurns(newTurn, game.getPlayers());
-        newTurn.setPlayerTurns(playerTurns);
+        newTurn.setGameId(game.getId());
+        List<PlayerStrategy> playerStrategies = createPlayerTurns(newTurn, game.getPlayers());
+        newTurn.setPlayerStrategies(playerStrategies);
         return newTurn;
     }
 
-    private List<PlayerTurn> createPlayerTurns(Turn turn, List<Player> players) {
-        return players.stream().map(player -> new PlayerTurn(turn.getId(), player)).toList();
+    private List<PlayerStrategy> createPlayerTurns(Turn turn, List<Player> players) {
+        return players.stream().map(player -> new PlayerStrategy(turn.getId(), player)).toList();
     }
 
     private void takeBets(Turn turn, int bet) {
-        turn.getPlayerTurns().forEach(playerTurn -> playerTurn.getPlayer().placeBet(playerTurn, bet));
+        turn.getPlayerStrategies().forEach(playerTurn -> playerTurn.getPlayer().placeBet(playerTurn, bet));
     }
 
     private void distributeCard(Turn turn) {
         Collections.shuffle(fullDeck);
         turn.setReserve(fullDeck);
-        turn.getPlayerTurns().forEach(playerTurn -> {
+        turn.getPlayerStrategies().forEach(playerTurn -> {
             playerTurn.setHand(Hand.createPlayerHand(getNCardFromReserve(2, turn.getReserve())));
         });
         turn.setDealerHand(Hand.createDealerHand(getNCardFromReserve(2, turn.getReserve())));
@@ -76,40 +78,41 @@ public class Dealer {
             revealDealerHand(activeTurn);
             calculateResults(activeTurn);
             activeTurn.setTurnState(Turn.TurnState.TURN_FINISHED);
+            game.setActiveTurn(null);
         }
         return activeTurn;
     }
 
     private void invitePlayersToPlayHand(Turn turn, ActionType actionType) {
-        Deque<PlayerTurn> playsToRegister = new ArrayDeque<>(turn.getPlayerTurns());
+        Deque<PlayerStrategy> playsToRegister = new ArrayDeque<>(turn.getPlayerStrategies());
 
         while (!playsToRegister.isEmpty()) {
-            PlayerTurn playerTurn = playsToRegister.pop();
-            if (isActionRequired(playerTurn)) {
-                registerPlay(turn, playerTurn, playsToRegister, actionType);
+            PlayerStrategy playerStrategy = playsToRegister.pop();
+            if (isActionRequired(playerStrategy)) {
+                registerPlay(turn, playerStrategy, playsToRegister, actionType);
                 if (isInputRequired(turn)) return;
             }
         }
         turn.setTurnState(Turn.TurnState.HANDS_PLAYED);
     }
 
-    private void registerPlay(Turn turn, PlayerTurn playerTurn, Deque<PlayerTurn> turnsToPlay, ActionType actionType) {
+    private void registerPlay(Turn turn, PlayerStrategy playerStrategy, Deque<PlayerStrategy> turnsToPlay, ActionType actionType) {
         Action playerAction;
-        Player player = playerTurn.getPlayer();
+        Player player = playerStrategy.getPlayer();
         do {
             playerAction = player.pickAction(actionType);
-            dealingValidation.validateAction(playerAction, playerTurn);
-            playerAction.execute(turn, turnsToPlay, playerTurn, this::getNCardFromReserve);
-            if (isInputRequired(playerTurn)) {
+            dealingValidation.validateAction(playerAction, playerStrategy);
+            playerAction.execute(turn, turnsToPlay, playerStrategy, this::getNCardFromReserve);
+            if (isInputRequired(playerStrategy)) {
                 turn.setTurnState(Turn.TurnState.ONHOLD);
                 return;
             }
-        } while (isActionRequired(playerTurn));
+        } while (isActionRequired(playerStrategy));
     }
 
-    private boolean isActionRequired(PlayerTurn playerTurn) {
-        return (playerTurn.getHand().getHandValue() < 21
-                && playerTurn.getActions().stream().noneMatch(a -> a instanceof Stand || a instanceof DoubleBet)
+    private boolean isActionRequired(PlayerStrategy playerStrategy) {
+        return (playerStrategy.getHand().getHandValue() < 21
+                && playerStrategy.getActions().stream().noneMatch(a -> a instanceof Stand || a instanceof DoubleBet)
         );
     }
 
@@ -117,8 +120,8 @@ public class Dealer {
         return turn.getTurnState().equals(Turn.TurnState.ONHOLD);
     }
 
-    private boolean isInputRequired(PlayerTurn playerTurn) {
-        return isActionRequired(playerTurn) && playerTurn.getPlayer().isInteractive();
+    private boolean isInputRequired(PlayerStrategy playerStrategy) {
+        return isActionRequired(playerStrategy) && playerStrategy.getPlayer().isInteractive();
     }
 
     private void revealDealerHand(Turn turn) {
@@ -132,36 +135,36 @@ public class Dealer {
 
     private void calculateResults(Turn turn) {
         int dealerPoints = turn.getDealerHand().getHandValue();
-        turn.getPlayerTurns().forEach(playerTurn -> {
+        turn.getPlayerStrategies().forEach(playerTurn -> {
             int playerPoints = playerTurn.getHand().getHandValue();
-            if (playerPoints > 21) playerTurn.setResult(PlayerTurn.ResultType.LOSS);
-            else if (dealerPoints > 21) playerTurn.setResult(PlayerTurn.ResultType.WIN);
+            if (playerPoints > 21) playerTurn.setResult(PlayerStrategy.ResultType.LOSS);
+            else if (dealerPoints > 21) playerTurn.setResult(PlayerStrategy.ResultType.WIN);
             else {
                 setResultIfNoneBust(playerPoints, dealerPoints, playerTurn, turn);
             }
         });
     }
 
-    private void setResultIfNoneBust(int playerPoints, int dealerPoints, PlayerTurn playerTurn, Turn turn) {
+    private void setResultIfNoneBust(int playerPoints, int dealerPoints, PlayerStrategy playerStrategy, Turn turn) {
         switch (Integer.signum(playerPoints - dealerPoints)) {
             case 1:
-                playerTurn.setResult(PlayerTurn.ResultType.WIN);
+                playerStrategy.setResult(PlayerStrategy.ResultType.WIN);
                 break;
             case -1:
-                playerTurn.setResult(PlayerTurn.ResultType.LOSS);
+                playerStrategy.setResult(PlayerStrategy.ResultType.LOSS);
                 break;
             case 0:
-                setResultByHandSize(playerTurn, turn.getDealerHand());
+                setResultByHandSize(playerStrategy, turn.getDealerHand());
                 break;
         }
     }
 
-    private void setResultByHandSize(PlayerTurn playerTurn, Hand dealerHand) {
-        if (playerTurn.getHand().size() == 2) {
-            if (dealerHand.size() == 2) playerTurn.setResult(PlayerTurn.ResultType.PUSH);
-            else playerTurn.setResult(PlayerTurn.ResultType.WIN);
-        } else if (dealerHand.size() == 2) playerTurn.setResult(PlayerTurn.ResultType.LOSS);
-        else playerTurn.setResult(PlayerTurn.ResultType.PUSH);
+    private void setResultByHandSize(PlayerStrategy playerStrategy, Hand dealerHand) {
+        if (playerStrategy.getHand().size() == 2) {
+            if (dealerHand.size() == 2) playerStrategy.setResult(PlayerStrategy.ResultType.PUSH);
+            else playerStrategy.setResult(PlayerStrategy.ResultType.WIN);
+        } else if (dealerHand.size() == 2) playerStrategy.setResult(PlayerStrategy.ResultType.LOSS);
+        else playerStrategy.setResult(PlayerStrategy.ResultType.PUSH);
     }
 
     public List<Card> getFullDeck() {

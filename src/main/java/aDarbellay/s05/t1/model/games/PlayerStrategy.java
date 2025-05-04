@@ -7,7 +7,7 @@ import aDarbellay.s05.t1.model.hands.Hand;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerTurn {
+public class PlayerStrategy {
 
     public enum ResultType {
         WIN, LOSS, PUSH
@@ -20,7 +20,7 @@ public class PlayerTurn {
     private Hand hand;
     private ResultType result;
 
-    public PlayerTurn(int turn, Player player) {
+    public PlayerStrategy(int turn, Player player) {
         this.turn = turn;
         this.player = player;
         this.actions = new ArrayList<Action>();
@@ -28,7 +28,7 @@ public class PlayerTurn {
 
     @Override
     public String toString() {
-        return "PlayerTurn{" +
+        return "PlayerStrategy{" +
                 "turn=" + turn +
                 ", player=" + player +
                 ", bet=" + bet +
