@@ -10,7 +10,7 @@ import aDarbellay.s05.t1.model.games.PlayerStrategy;
 public class RandomPlayer implements Player {
 
     @Override
-    public void placeBet(PlayerStrategy playerStrategy, int bet) {
+    public void placeBet(PlayerStrategy playerStrategy, Integer bet) {
         playerStrategy.setBet((int) Math.floor(Math.random() * 50));
     }
 
@@ -22,6 +22,16 @@ public class RandomPlayer implements Player {
     @Override
     public boolean isInteractive() {
         return false;
+    }
+
+    @Override
+    public int getId() {
+        return 0;
+    }
+
+    @Override
+    public void setId(int i) {
+
     }
 
     @Override

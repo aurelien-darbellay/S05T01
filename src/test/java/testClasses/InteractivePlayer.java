@@ -5,10 +5,11 @@ import aDarbellay.s05.t1.model.actions.*;
 import aDarbellay.s05.t1.model.games.PlayerStrategy;
 
 public class InteractivePlayer implements Player {
+    private int id;
 
     @Override
-    public void placeBet(PlayerStrategy playerStrategy, int quantity) {
-
+    public void placeBet(PlayerStrategy playerStrategy, Integer quantity) {
+        playerStrategy.setBet(quantity);
     }
 
     @Override
@@ -24,6 +25,16 @@ public class InteractivePlayer implements Player {
     @Override
     public boolean isInteractive() {
         return true;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

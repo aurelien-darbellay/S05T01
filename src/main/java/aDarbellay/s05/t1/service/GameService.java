@@ -69,14 +69,14 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    public Mono<Turn> startNewTurn(String gameId, int bet) {
+    public Mono<Turn> startNewTurn(String gameId, int bet, int playerId) {
         return getGameById(gameId)
-                .map(game -> dealer.startTurn(game, bet));
+                .map(game -> dealer.startTurn(game, bet, playerId));
     }
 
     public Mono<Turn> playTurn(String gameId, ActionType action) {
         return getGameById(gameId)
-                .map(game -> dealer.playTurn(game, action));
+                .map(game -> dealer.playTurn(game, action, ));
     }
 
     public Mono<Game> createNewGame(int numPlayers, Player mainPlayer) {

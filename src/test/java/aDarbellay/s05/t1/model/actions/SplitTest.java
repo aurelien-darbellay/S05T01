@@ -20,7 +20,7 @@ class SplitTest {
 
     static class MockPlayer implements Player {
         @Override
-        public void placeBet(PlayerStrategy playerStrategy, int bet) {
+        public void placeBet(PlayerStrategy playerStrategy, Integer bet) {
         }
 
         @Override
@@ -31,6 +31,16 @@ class SplitTest {
         @Override
         public boolean isInteractive() {
             return false;
+        }
+
+        @Override
+        public int getId() {
+            return 0;
+        }
+
+        @Override
+        public void setId(int i) {
+
         }
     }
 

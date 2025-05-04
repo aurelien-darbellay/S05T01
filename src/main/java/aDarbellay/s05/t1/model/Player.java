@@ -6,9 +6,13 @@ import aDarbellay.s05.t1.model.games.PlayerStrategy;
 
 public interface Player {
 
-    void placeBet(PlayerStrategy playerStrategy, int quantity);
+    void placeBet(PlayerStrategy playerStrategy, Integer quantity);
 
     Action pickAction(ActionType actionType);
 
     boolean isInteractive();
+
+    int getId();
+
+    void setId(int i);
 }

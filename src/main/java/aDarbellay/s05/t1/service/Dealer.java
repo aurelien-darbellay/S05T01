@@ -30,11 +30,11 @@ public class Dealer {
         this.dealingValidation = dealingValidation;
     }
 
-    public Turn startTurn(Game game, int bet) {
+    public Turn startTurn(Game game, int bet, int playerId) {
         //Should I validate that there isn't already a turn going on//
         Turn newTurn = initializeNewTurn(game);
         game.setActiveTurn(newTurn);
-        takeBets(newTurn, bet);
+        takeBets(newTurn, bet, playerId);
         distributeCard(newTurn);
         newTurn.setTurnState(Turn.TurnState.HANDS_DISTRIBUTED);
         return newTurn;
@@ -52,8 +52,12 @@ public class Dealer {
         return players.stream().map(player -> new PlayerStrategy(turn.getId(), player)).toList();
     }
 
-    private void takeBets(Turn turn, int bet) {
-        turn.getPlayerStrategies().forEach(playerTurn -> playerTurn.getPlayer().placeBet(playerTurn, bet));
+    private void takeBets(Turn turn, Integer bet, int playerId) {
+        turn.getPlayerStrategies().forEach(playerTurn ->
+        {
+            if (!playerTurn.getPlayer().isInteractive()) playerTurn.getPlayer().placeBet(playerTurn, null);
+            else if (playerTurn.getPlayer().getId() == playerId) playerTurn.getPlayer().placeBet(playerTurn, bet);
+        });
     }
 
     private void distributeCard(Turn turn) {
@@ -71,9 +75,9 @@ public class Dealer {
         return drawnCards;
     }
 
-    public Turn playTurn(Game game, ActionType actionType) {
+    public Turn playTurn(Game game, ActionType actionType, int playerId) {
         Turn activeTurn = game.getActiveTurn();
-        invitePlayersToPlayHand(activeTurn, actionType);
+        invitePlayersToPlayHand(activeTurn, actionType, playerId);
         if (activeTurn.getTurnState().equals(Turn.TurnState.HANDS_PLAYED)) {
             revealDealerHand(activeTurn);
             calculateResults(activeTurn);
@@ -83,24 +87,25 @@ public class Dealer {
         return activeTurn;
     }
 
-    private void invitePlayersToPlayHand(Turn turn, ActionType actionType) {
+    private void invitePlayersToPlayHand(Turn turn, ActionType actionType, int playerId) {
         Deque<PlayerStrategy> playsToRegister = new ArrayDeque<>(turn.getPlayerStrategies());
 
         while (!playsToRegister.isEmpty()) {
             PlayerStrategy playerStrategy = playsToRegister.pop();
             if (isActionRequired(playerStrategy)) {
-                registerPlay(turn, playerStrategy, playsToRegister, actionType);
+                registerAction(turn, playerStrategy, playsToRegister, actionType, playerId);
                 if (isInputRequired(turn)) return;
             }
         }
         turn.setTurnState(Turn.TurnState.HANDS_PLAYED);
     }
 
-    private void registerPlay(Turn turn, PlayerStrategy playerStrategy, Deque<PlayerStrategy> turnsToPlay, ActionType actionType) {
+    private void registerAction(Turn turn, PlayerStrategy playerStrategy, Deque<PlayerStrategy> turnsToPlay, ActionType actionType, int playerId) {
         Action playerAction;
         Player player = playerStrategy.getPlayer();
         do {
-            playerAction = player.pickAction(actionType);
+            if (player.getId() == playerId) playerAction = player.pickAction(actionType);
+            else playerAction = player.pickAction(null);
             dealingValidation.validateAction(playerAction, playerStrategy);
             playerAction.execute(turn, turnsToPlay, playerStrategy, this::getNCardFromReserve);
             if (isInputRequired(playerStrategy)) {

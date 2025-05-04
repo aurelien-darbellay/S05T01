@@ -15,7 +15,7 @@ public class PlayerStrategy {
 
     private int turn;
     private Player player;
-    private int bet;
+    private Integer bet;
     private List<Action> actions;
     private Hand hand;
     private ResultType result;
@@ -54,11 +54,11 @@ public class PlayerStrategy {
         this.player = player;
     }
 
-    public int getBet() {
+    public Integer getBet() {
         return bet;
     }
 
-    public void setBet(int bet) {
+    public void setBet(Integer bet) {
         this.bet = bet;
     }
 
