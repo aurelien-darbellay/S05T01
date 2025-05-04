@@ -1,6 +1,7 @@
 package aDarbellay.s05.t1.service;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
+import aDarbellay.s05.t1.exception.ServiceExceptionHandler;
 import aDarbellay.s05.t1.model.Player;
 import aDarbellay.s05.t1.model.actions.ActionType;
 import aDarbellay.s05.t1.model.games.Game;
@@ -21,12 +22,14 @@ public class GameService {
     private final GameRepository gameRepository;
     private final Dealer dealer;
     private final GameManager gameManager;
+    private final ServiceExceptionHandler serviceExceptionHandler;
 
     @Autowired
-    public GameService(GameRepository gameRepository, Dealer dealer, GameManager gameManager) {
+    public GameService(GameRepository gameRepository, Dealer dealer, GameManager gameManager, ServiceExceptionHandler serviceExceptionHandler) {
         this.gameRepository = gameRepository;
         this.dealer = dealer;
         this.gameManager = gameManager;
+        this.serviceExceptionHandler = serviceExceptionHandler;
     }
 
     public Mono<Game> saveGame(Game game) {
@@ -69,14 +72,14 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    public Mono<Turn> startNewTurn(String gameId, int bet, int playerId) {
+    public Mono<Turn> startNewTurn(String gameId, int bet, int strategyId) {
         return getGameById(gameId)
-                .map(game -> dealer.startTurn(game, bet, playerId));
+                .flatMap(game -> serviceExceptionHandler.exceptionPropagator(game, bet, strategyId, dealer::startTurn));
     }
 
-    public Mono<Turn> playTurn(String gameId, ActionType action) {
+    public Mono<Turn> playTurn(String gameId, ActionType action, int strategyId) {
         return getGameById(gameId)
-                .map(game -> dealer.playTurn(game, action, ));
+                .map(game -> dealer.playTurn(game, action, strategyId));
     }
 
     public Mono<Game> createNewGame(int numPlayers, Player mainPlayer) {

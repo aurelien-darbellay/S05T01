@@ -16,10 +16,11 @@ public class Turn {
     private String gameId;
 
     public enum TurnState {
-        HANDS_DISTRIBUTED("Bet placed; cards distributed"),
+        BETS_PLACED("Bet placed"),
+        HANDS_DISTRIBUTED("Cards distributed"),
         HANDS_PLAYED("Players have chosen action - moving on to revealing the dealer's hand"),
         TURN_FINISHED("Turn finished"),
-        ONHOLD("Input from interactive player required to move forward.");
+        INPUT_REQUIRED("Input from interactive player required to move forward.");
 
         private final String value;
 

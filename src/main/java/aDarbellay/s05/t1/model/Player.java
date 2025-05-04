@@ -12,6 +12,10 @@ public interface Player {
 
     boolean isInteractive();
 
+    default boolean isAutomatic() {
+        return !isInteractive();
+    }
+
     int getId();
 
     void setId(int i);

@@ -13,6 +13,7 @@ public class PlayerStrategy {
         WIN, LOSS, PUSH
     }
 
+    private int id;
     private int turn;
     private Player player;
     private Integer bet;
@@ -24,6 +25,7 @@ public class PlayerStrategy {
         this.turn = turn;
         this.player = player;
         this.actions = new ArrayList<Action>();
+        this.id = player.getId();
     }
 
     @Override
@@ -86,4 +88,11 @@ public class PlayerStrategy {
         this.result = result;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

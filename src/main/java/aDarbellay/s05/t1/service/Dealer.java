@@ -1,5 +1,6 @@
 package aDarbellay.s05.t1.service;
 
+import aDarbellay.s05.t1.exception.EntityNotFoundException;
 import aDarbellay.s05.t1.model.Player;
 import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.actions.ActionType;
@@ -30,7 +31,7 @@ public class Dealer {
         this.dealingValidation = dealingValidation;
     }
 
-    public Turn startTurn(Game game, int bet, int playerId) {
+    public Turn startTurn(Game game, int bet, int playerId) throws EntityNotFoundException {
         //Should I validate that there isn't already a turn going on//
         Turn newTurn = initializeNewTurn(game);
         game.setActiveTurn(newTurn);
@@ -52,12 +53,14 @@ public class Dealer {
         return players.stream().map(player -> new PlayerStrategy(turn.getId(), player)).toList();
     }
 
-    private void takeBets(Turn turn, Integer bet, int playerId) {
-        turn.getPlayerStrategies().forEach(playerTurn ->
-        {
-            if (!playerTurn.getPlayer().isInteractive()) playerTurn.getPlayer().placeBet(playerTurn, null);
-            else if (playerTurn.getPlayer().getId() == playerId) playerTurn.getPlayer().placeBet(playerTurn, bet);
+    private void takeBets(Turn turn, Integer bet, int strategyId) throws EntityNotFoundException {
+        turn.getPlayerStrategies().forEach(playerStrategy -> {
+            if (playerStrategy.getPlayer().isAutomatic()) setBetInStrategy(playerStrategy);
         });
+        PlayerStrategy targetStrategy = selectStrategyById(strategyId, turn.getPlayerStrategies());
+        setBetInStrategy(targetStrategy, strategyId, bet);
+
+        turn.setTurnState(Turn.TurnState.BETS_PLACED);
     }
 
     private void distributeCard(Turn turn) {
@@ -109,7 +112,7 @@ public class Dealer {
             dealingValidation.validateAction(playerAction, playerStrategy);
             playerAction.execute(turn, turnsToPlay, playerStrategy, this::getNCardFromReserve);
             if (isInputRequired(playerStrategy)) {
-                turn.setTurnState(Turn.TurnState.ONHOLD);
+                turn.setTurnState(Turn.TurnState.INPUT_REQUIRED);
                 return;
             }
         } while (isActionRequired(playerStrategy));
@@ -122,11 +125,24 @@ public class Dealer {
     }
 
     private boolean isInputRequired(Turn turn) {
-        return turn.getTurnState().equals(Turn.TurnState.ONHOLD);
+        return turn.getTurnState().equals(Turn.TurnState.INPUT_REQUIRED);
     }
 
     private boolean isInputRequired(PlayerStrategy playerStrategy) {
         return isActionRequired(playerStrategy) && playerStrategy.getPlayer().isInteractive();
+    }
+
+    private PlayerStrategy selectStrategyById(int strategyId, List<PlayerStrategy> strategies) {
+        return strategies.stream().filter(strategy -> strategy.getId() == strategyId).toList().getFirst();
+    }
+
+    private void setBetInStrategy(PlayerStrategy strategy) {
+        strategy.getPlayer().placeBet(strategy, null);
+    }
+
+    private void setBetInStrategy(PlayerStrategy strategy, int strategyId, Integer bet) throws EntityNotFoundException {
+        if (strategy == null) throw new EntityNotFoundException(PlayerStrategy.class, String.valueOf(strategyId));
+        strategy.getPlayer().placeBet(strategy, bet);
     }
 
     private void revealDealerHand(Turn turn) {
