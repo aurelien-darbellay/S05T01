@@ -13,14 +13,14 @@ import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.validation.DealingValidation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import testClasses.CautiousPlayer;
 import testClasses.InteractivePlayer;
 import testClasses.RandomPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DealerTest {
 
@@ -44,10 +44,10 @@ class DealerTest {
         interactivePlayer.setId(3);
         Player secondInteractivePlayer = new InteractivePlayer();
         secondInteractivePlayer.setId(4);
-        automaticPlayers = List.of(cautiousPlayer,randomPlayer);
+        automaticPlayers = List.of(cautiousPlayer, randomPlayer);
         oneInteractivePlayer = List.of(interactivePlayer);
-        interactivePlayers = List.of(interactivePlayer,secondInteractivePlayer);
-        mixedPlayers = List.of(cautiousPlayer,interactivePlayer,randomPlayer,secondInteractivePlayer);
+        interactivePlayers = List.of(interactivePlayer, secondInteractivePlayer);
+        mixedPlayers = List.of(cautiousPlayer, interactivePlayer, randomPlayer, secondInteractivePlayer);
         game.setTurnsPlayed(new ArrayList<>());
 
 
@@ -65,8 +65,9 @@ class DealerTest {
     void startThrowExceptionWithOneInteractivePLayer() throws EntityNotFoundException {
         game.setPlayers(oneInteractivePlayer);
         Dealer bob = new Dealer(fullDeck, new DealingValidation());
-        assertThrows(EntityNotFoundException.class,()->bob.startTurn(game, new Bet(10), 1));
+        assertThrows(EntityNotFoundException.class, () -> bob.startTurn(game, new Bet(10), 1));
     }
+
     @Test
     void startWithOneInteractivePLayer() throws EntityNotFoundException {
         game.setPlayers(oneInteractivePlayer);
@@ -101,7 +102,7 @@ class DealerTest {
         System.out.println(newTurn.getTurnState().getValue());
         ActionChoice actionChoice = new ActionChoice();
         actionChoice.setActionType(ActionType.STAND);
-        Turn finishedTurn = bob.playTurn(game, actionChoice,0);
+        Turn finishedTurn = bob.playTurn(game, actionChoice, 0);
         System.out.println(finishedTurn.toString());
     }
 
@@ -126,10 +127,13 @@ class DealerTest {
         game.setPlayers(mixedPlayers);
         Dealer bob = new Dealer(fullDeck, new DealingValidation());
         Turn newTurn = bob.startTurn(game, new Bet(10), 3);
-        System.out.println(newTurn.getTurnState().getValue());
+        bob.startTurn(game, new Bet(12), 4);
+        System.out.println(game.getActiveTurn().toString());
         ActionChoice actionChoice = new ActionChoice();
-        actionChoice.setActionType(ActionType.HIT);
-        assertThrows(UntimelyActionException.class, () -> bob.playTurn(game, actionChoice, 3)) ;
+        actionChoice.setActionType(ActionType.STAND);
+        System.out.println(bob.playTurn(game, actionChoice, 3).toString());
+        ActionChoice anotherChoice = new ActionChoice();
+        anotherChoice.setActionType(ActionType.HIT);
+        System.out.println(bob.playTurn(game, anotherChoice, 4).toString());
     }
-
 }
