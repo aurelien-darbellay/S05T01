@@ -15,7 +15,8 @@ public class Split implements Action {
         addStrategyToTurn(playerStrategy);
         Hand newHand = splitHand(playerStrategy.getHand(), turn, drawFunction);
         PlayerStrategy newPLayerStrategy = createNewPlayerStrategy(turn, playerStrategy, newHand);
-        newPLayerStrategy.setId(playerStrategy.getId() * (-1));
+        newPLayerStrategy.setId(playerStrategy.getId());
+        playerStrategy.setId(playerStrategy.getId()*10);
         turnsToPlay.push(newPLayerStrategy);
         turn.getPlayerStrategies().add(newPLayerStrategy);
         return false;

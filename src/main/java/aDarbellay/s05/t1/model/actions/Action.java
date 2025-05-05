@@ -13,7 +13,6 @@ public interface Action {
     default void addStrategyToTurn(PlayerStrategy playerStrategy) {
         playerStrategy.getActions().add(this);
     }
-
     boolean execute(Turn turn, Deque<PlayerStrategy> turnsToPlay, PlayerStrategy playerStrategy, BiFunction<Integer, List<Card>, List<Card>> biFunction);
 }
 

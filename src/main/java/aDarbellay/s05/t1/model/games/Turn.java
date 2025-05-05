@@ -13,14 +13,16 @@ public class Turn {
     private Hand dealerHand;
     private ArrayList<Card> reserve;
     private TurnState turnState;
+    private boolean isInputRequired;
     private String gameId;
 
     public enum TurnState {
+        STARTED("Turn just started"),
         BETS_PLACED("Bet placed"),
         HANDS_DISTRIBUTED("Cards distributed"),
+        PLAYERS_CHOOSE_STRATEGY("The players are choosing their strategies"),
         HANDS_PLAYED("Players have chosen action - moving on to revealing the dealer's hand"),
-        TURN_FINISHED("Turn finished"),
-        INPUT_REQUIRED("Input from interactive player required to move forward.");
+        TURN_FINISHED("Turn finished");
 
         private final String value;
 
@@ -34,6 +36,7 @@ public class Turn {
     }
 
     public Turn(int id) {
+        this.turnState = TurnState.STARTED;
         this.id = id;
     }
 
@@ -83,6 +86,14 @@ public class Turn {
 
     public void setGameId(String gameId) {
         this.gameId = gameId;
+    }
+
+    public boolean isInputRequired() {
+        return isInputRequired;
+    }
+
+    public void setInputRequired(boolean inputRequired) {
+        isInputRequired = inputRequired;
     }
 
     @Override

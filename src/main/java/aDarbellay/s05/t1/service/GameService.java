@@ -2,7 +2,9 @@ package aDarbellay.s05.t1.service;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
 import aDarbellay.s05.t1.exception.ServiceExceptionHandler;
+import aDarbellay.s05.t1.model.Bet;
 import aDarbellay.s05.t1.model.Player;
+import aDarbellay.s05.t1.model.actions.ActionChoice;
 import aDarbellay.s05.t1.model.actions.ActionType;
 import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.Turn;
@@ -72,14 +74,14 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    public Mono<Turn> startNewTurn(String gameId, int bet, int strategyId) {
+    public Mono<Turn> startNewTurn(String gameId, Bet bet, int strategyId) {
         return getGameById(gameId)
                 .flatMap(game -> serviceExceptionHandler.exceptionPropagator(game, bet, strategyId, dealer::startTurn));
     }
 
-    public Mono<Turn> playTurn(String gameId, ActionType action, int strategyId) {
+    public Mono<Turn> playTurn(String gameId, ActionChoice actionChoice, int strategyId) {
         return getGameById(gameId)
-                .map(game -> dealer.playTurn(game, action, strategyId));
+                .flatMap(game -> serviceExceptionHandler.exceptionPropagator(game,actionChoice,strategyId,dealer::playTurn));
     }
 
     public Mono<Game> createNewGame(int numPlayers, Player mainPlayer) {

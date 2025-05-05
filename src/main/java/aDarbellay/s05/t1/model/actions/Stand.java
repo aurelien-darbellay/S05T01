@@ -8,7 +8,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class Stand implements Action {
+public class Stand implements Action{
 
     @Override
     public boolean execute(Turn turn, Deque<PlayerStrategy> turnsToPlay, PlayerStrategy playerStrategy, BiFunction<Integer, List<Card>, List<Card>> biFunction) {

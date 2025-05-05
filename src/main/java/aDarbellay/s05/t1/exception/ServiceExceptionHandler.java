@@ -9,7 +9,7 @@ public class ServiceExceptionHandler {
         try {
             R r = throwingFunction.apply(t, u, v);
             return Mono.just(r);
-        } catch (Exception e) {
+        } catch (Exception e){
             return Mono.error(e);
         }
     }
