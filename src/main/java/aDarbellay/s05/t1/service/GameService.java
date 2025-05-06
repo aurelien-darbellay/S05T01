@@ -1,13 +1,14 @@
 package aDarbellay.s05.t1.service;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
+
 import aDarbellay.s05.t1.exception.ServiceExceptionHandler;
 import aDarbellay.s05.t1.model.Bet;
-import aDarbellay.s05.t1.model.Player;
+import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.actions.ActionChoice;
-import aDarbellay.s05.t1.model.actions.ActionType;
 import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.Turn;
+import aDarbellay.s05.t1.model.player.PlayerFactory;
 import aDarbellay.s05.t1.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 public class GameService {
@@ -25,13 +27,15 @@ public class GameService {
     private final Dealer dealer;
     private final GameManager gameManager;
     private final ServiceExceptionHandler serviceExceptionHandler;
+    private final PlayerFactory playerFactory;
 
     @Autowired
-    public GameService(GameRepository gameRepository, Dealer dealer, GameManager gameManager, ServiceExceptionHandler serviceExceptionHandler) {
+    public GameService(GameRepository gameRepository, Dealer dealer, GameManager gameManager, ServiceExceptionHandler serviceExceptionHandler, PlayerFactory playerFactory) {
         this.gameRepository = gameRepository;
         this.dealer = dealer;
         this.gameManager = gameManager;
         this.serviceExceptionHandler = serviceExceptionHandler;
+        this.playerFactory = playerFactory;
     }
 
     public Mono<Game> saveGame(Game game) {
@@ -84,12 +88,16 @@ public class GameService {
                 .flatMap(game -> serviceExceptionHandler.exceptionPropagator(game,actionChoice,strategyId,dealer::playTurn));
     }
 
-    public Mono<Game> createNewGame(int numPlayers, Player mainPlayer) {
-        List<Player> players = new ArrayList<>();
-        players.add(mainPlayer);
+    public Mono<Game> createNewGame(int numAutomaticPlayers, List<Player> interactivePlayers) {
+        List<Player> players = new ArrayList<>(interactivePlayers);
+        IntStream.range(1,numAutomaticPlayers).forEach(num->players.add(playerFactory.createNewPlayer()));
         Collections.shuffle(players);
         Game newGame = new Game();
         newGame.setPlayers(players);
         return gameRepository.save(newGame);
+    }
+
+    public Game getCachedGame(String id){
+        return gameManager.getGameFromCache(id);
     }
 }

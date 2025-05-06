@@ -4,18 +4,21 @@ package aDarbellay.s05.t1.service;
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
 import aDarbellay.s05.t1.exception.UntimelyActionException;
 import aDarbellay.s05.t1.model.Bet;
-import aDarbellay.s05.t1.model.Player;
+import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.actions.ActionChoice;
 import aDarbellay.s05.t1.model.actions.ActionType;
+import aDarbellay.s05.t1.model.cards.Card;
 import aDarbellay.s05.t1.model.cards.Deck;
 import aDarbellay.s05.t1.model.games.Game;
+import aDarbellay.s05.t1.model.games.PlayerStrategy;
 import aDarbellay.s05.t1.model.games.Turn;
+import aDarbellay.s05.t1.model.hands.Hand;
 import aDarbellay.s05.t1.validation.DealingValidation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import testClasses.CautiousPlayer;
+import aDarbellay.s05.t1.model.player.CautiousPlayer;
 import testClasses.InteractivePlayer;
-import testClasses.RandomPlayer;
+import aDarbellay.s05.t1.model.player.RandomPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +52,6 @@ class DealerTest {
         interactivePlayers = List.of(interactivePlayer, secondInteractivePlayer);
         mixedPlayers = List.of(cautiousPlayer, interactivePlayer, randomPlayer, secondInteractivePlayer);
         game.setTurnsPlayed(new ArrayList<>());
-
 
     }
 
@@ -135,5 +137,28 @@ class DealerTest {
         ActionChoice anotherChoice = new ActionChoice();
         anotherChoice.setActionType(ActionType.HIT);
         System.out.println(bob.playTurn(game, anotherChoice, 4).toString());
+    }
+
+    @Test
+    void runWithSplit() throws EntityNotFoundException, UntimelyActionException {
+        game.setPlayers(oneInteractivePlayer);
+        Dealer bob = new Dealer(fullDeck, new DealingValidation());
+        Turn newTurn = bob.startTurn(game, new Bet(10), 3);
+        PlayerStrategy strategy = newTurn.getPlayerStrategies().getFirst();
+        Hand hand = strategy.getHand();
+        Card secondCard = hand.get(1);
+        hand.remove(secondCard);
+        newTurn.getReserve().add(secondCard);
+        Card firstCardTwin = newTurn.getReserve().stream().filter(card -> card.getPoints()==hand.getFirst().getPoints()).findFirst().orElse(null);
+        hand.add(firstCardTwin);
+        ActionChoice actionChoice = new ActionChoice();
+        actionChoice.setActionType(ActionType.SPLIT);
+        System.out.println(bob.playTurn(game, actionChoice, 3).toString());
+        ActionChoice anotherChoice = new ActionChoice();
+        anotherChoice.setActionType(ActionType.STAND);
+        System.out.println(bob.playTurn(game, anotherChoice, 3).toString());
+        ActionChoice yetAnotherChoice = new ActionChoice();
+        yetAnotherChoice.setActionType(ActionType.DOUBLE);
+        System.out.println(bob.playTurn(game, yetAnotherChoice, 30).toString());
     }
 }

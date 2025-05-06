@@ -1,6 +1,6 @@
 package aDarbellay.s05.t1.model.games;
 
-import aDarbellay.s05.t1.model.Player;
+import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.hands.Hand;
 
@@ -17,20 +17,20 @@ public class PlayerStrategy {
     private int turn;
     private Player player;
     private Integer bet;
-    private List<Action> actions;
+    private List<Action> actions = new ArrayList<>();
     private Hand hand;
     private ResultType result;
 
     public PlayerStrategy(int turn, Player player) {
         this.turn = turn;
         this.player = player;
-        this.actions = new ArrayList<Action>();
         this.id = player.getId();
     }
 
     @Override
     public String toString() {
         return "PlayerStrategy{" +
+                "id="+ id +
                 "turn=" + turn +
                 ", player=" + player +
                 ", bet=" + bet +

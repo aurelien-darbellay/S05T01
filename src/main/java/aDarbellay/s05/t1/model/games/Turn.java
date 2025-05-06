@@ -53,7 +53,7 @@ public class Turn {
     }
 
     public void setPlayerStrategies(List<PlayerStrategy> playerStrategies) {
-        this.playerStrategies = playerStrategies;
+        this.playerStrategies = new ArrayList<>(playerStrategies);
     }
 
     public Hand getDealerHand() {

@@ -1,25 +1,21 @@
-package testClasses;
+package aDarbellay.s05.t1.model.player;
 
-import aDarbellay.s05.t1.model.Player;
 import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.actions.ActionType;
+import aDarbellay.s05.t1.model.actions.Hit;
 import aDarbellay.s05.t1.model.actions.Stand;
 import aDarbellay.s05.t1.model.games.PlayerStrategy;
 
-public class CautiousPlayer implements Player {
-    @Override
-    public String toString() {
-        return "CautiousPLayer{}";
-    }
+public class RandomPlayer implements Player {
 
     @Override
     public void placeBet(PlayerStrategy playerStrategy, Integer bet) {
-        playerStrategy.setBet(2);
+        playerStrategy.setBet((int) Math.floor(Math.random() * 50));
     }
 
     @Override
     public Action pickAction(ActionType actionType) {
-        return new Stand();
+        return Math.random() < 0.5 ? new Stand() : new Hit();
     }
 
     @Override
@@ -37,4 +33,8 @@ public class CautiousPlayer implements Player {
 
     }
 
+    @Override
+    public String toString() {
+        return "RandomPlayer{}";
+    }
 }

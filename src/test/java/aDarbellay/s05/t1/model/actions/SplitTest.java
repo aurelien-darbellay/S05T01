@@ -1,6 +1,6 @@
 package aDarbellay.s05.t1.model.actions;
 
-import aDarbellay.s05.t1.model.Player;
+import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.cards.Card;
 import aDarbellay.s05.t1.model.cards.Deck;
 import aDarbellay.s05.t1.model.games.PlayerStrategy;

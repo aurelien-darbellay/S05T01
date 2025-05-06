@@ -1,9 +1,10 @@
 package aDarbellay.s05.t1.model.games;
 
-import aDarbellay.s05.t1.model.Player;
+import aDarbellay.s05.t1.model.player.Player;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document
@@ -11,16 +12,17 @@ public class Game {
 
     @Id
     private String id;
-    private List<Player> players;
-    private List<Turn> turnsPlayed;
+    private List<Player> players = new ArrayList<>();
+    private List<Turn> turnsPlayed = new ArrayList<>();
     private Turn activeTurn;
+    private boolean gameOn;
 
     public List<Turn> getTurnsPlayed() {
         return turnsPlayed;
     }
 
     public void setTurnsPlayed(List<Turn> turnsPlayed) {
-        this.turnsPlayed = turnsPlayed;
+        this.turnsPlayed = new ArrayList<>(turnsPlayed);
     }
 
     public List<Player> getPlayers() {
@@ -28,7 +30,7 @@ public class Game {
     }
 
     public void setPlayers(List<Player> players) {
-        this.players = players;
+        this.players = new ArrayList<>(players);
     }
 
     public String getId() {
@@ -57,7 +59,7 @@ public class Game {
                 turnsSummary.append("\n").append(playerTurn.toString());
             });
         });*/
-        return "Game{}";
+        return "Game{ id = " + id + " }";
     }
 
     public boolean isGameOn() {

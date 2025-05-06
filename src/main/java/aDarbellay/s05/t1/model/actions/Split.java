@@ -38,4 +38,9 @@ public class Split implements Action {
         newPLayerStrategy.setHand(newHand);
         return newPLayerStrategy;
     }
+
+    @Override
+    public String toString() {
+        return "Split{}";
+    }
 }

@@ -3,7 +3,7 @@ package aDarbellay.s05.t1.service;
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
 import aDarbellay.s05.t1.exception.UntimelyActionException;
 import aDarbellay.s05.t1.model.Bet;
-import aDarbellay.s05.t1.model.Player;
+import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.actions.ActionChoice;
 import aDarbellay.s05.t1.model.actions.DoubleBet;
@@ -97,6 +97,7 @@ public class Dealer {
             revealDealerHand(activeTurn);
             calculateResults(activeTurn);
             activeTurn.setTurnState(Turn.TurnState.TURN_FINISHED);
+            game.getTurnsPlayed().add(activeTurn);
             game.setActiveTurn(null);
         }
         return activeTurn;

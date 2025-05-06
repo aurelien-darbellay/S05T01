@@ -1,4 +1,4 @@
-package aDarbellay.s05.t1.model;
+package aDarbellay.s05.t1.model.player;
 
 import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.actions.ActionType;
