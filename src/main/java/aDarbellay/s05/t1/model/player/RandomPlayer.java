@@ -24,12 +24,12 @@ public class RandomPlayer implements Player {
     }
 
     @Override
-    public long getId() {
+    public int getId() {
         return 0;
     }
 
     @Override
-    public void setId(long i) {
+    public void setId(int i) {
 
     }
 

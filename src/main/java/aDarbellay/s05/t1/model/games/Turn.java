@@ -11,7 +11,7 @@ public class Turn {
     private int id;
     private List<PlayerStrategy> playerStrategies;
     private Hand dealerHand;
-    private ArrayList<Card> reserve;
+    private ArrayList<Card> reserve = new ArrayList<>();
     private TurnState turnState;
     private boolean isInputRequired;
     private String gameId;

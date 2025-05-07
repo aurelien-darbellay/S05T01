@@ -22,7 +22,7 @@ public interface Player {
         return !isInteractive();
     }
 
-    long getId();
+    int getId();
 
-    void setId(long i);
+    void setId(int i);
 }

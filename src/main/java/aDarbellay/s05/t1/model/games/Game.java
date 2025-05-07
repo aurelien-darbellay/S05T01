@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Document
 public class Game {
@@ -49,6 +50,10 @@ public class Game {
         this.activeTurn = activeTurn;
     }
 
+    public boolean isGameOn() {
+        return (getActiveTurn() != null);
+    }
+
     @Override
     public String toString() {
         /*StringBuilder turnsSummary = new StringBuilder();
@@ -62,7 +67,16 @@ public class Game {
         return "Game{ id = " + id + " }";
     }
 
-    public boolean isGameOn() {
-        return (getActiveTurn() != null);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+        return gameOn == game.gameOn && Objects.equals(id, game.id) && Objects.equals(players, game.players) && Objects.equals(turnsPlayed, game.turnsPlayed) && Objects.equals(activeTurn, game.activeTurn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, players, turnsPlayed, activeTurn, gameOn);
     }
 }

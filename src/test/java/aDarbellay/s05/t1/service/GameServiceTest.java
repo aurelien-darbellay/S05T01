@@ -1,6 +1,7 @@
 package aDarbellay.s05.t1.service;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
+import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.exception.ServiceExceptionHandler;
 import aDarbellay.s05.t1.model.Bet;
 import aDarbellay.s05.t1.model.player.Player;
@@ -120,14 +121,14 @@ class GameServiceTest {
     }
 
     @Test
-    void playTurnWithAutomaticPlayers(){
-        Mono<Turn> result = gameService.startNewTurn("gameWithTwoPlayers",new Bet(0),0)
+    void playTurnWithAutomaticPlayers() throws IllegalActionException {
+        Mono<Turn> result = gameService.startNewTurn("gameWithTwoPlayers",0,0)
                 .doOnNext(System.out::println);
         StepVerifier.create(result).expectNextMatches(turn -> turn.getPlayerStrategies().size()==2).verifyComplete();
         Game activeGame = gameService.getCachedGame("gameWithTwoPlayers");
         System.out.println(activeGame);
         System.out.println(activeGame.getTurnsPlayed());
-        Mono<Turn> finishedResult = gameService.playTurn(activeGame.getId(),new ActionChoice(),0).
+        Mono<Turn> finishedResult = gameService.playTurn(activeGame.getId(),"hit",0).
                 doOnNext(turn -> {
                     System.out.println(turn);
                     System.out.println(activeGame.getTurnsPlayed());

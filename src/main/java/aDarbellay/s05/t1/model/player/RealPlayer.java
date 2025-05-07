@@ -7,7 +7,7 @@ import aDarbellay.s05.t1.model.games.PlayerStrategy;
 
 public class RealPlayer implements Player{
 
-    private long id;
+    private int id;
     private String firstname;
     private String lastname;
     private long points = 0;
@@ -30,12 +30,12 @@ public class RealPlayer implements Player{
     }
 
     @Override
-    public long getId() {
+    public int getId() {
         return this.id;
     }
 
     @Override
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

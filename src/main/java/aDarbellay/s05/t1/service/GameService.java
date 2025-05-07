@@ -2,8 +2,10 @@ package aDarbellay.s05.t1.service;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
 
+import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.exception.ServiceExceptionHandler;
 import aDarbellay.s05.t1.model.Bet;
+import aDarbellay.s05.t1.model.actions.ActionType;
 import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.actions.ActionChoice;
 import aDarbellay.s05.t1.model.games.Game;
@@ -78,14 +80,26 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    public Mono<Turn> startNewTurn(String gameId, Bet bet, int strategyId) {
+    public Mono<Turn> startNewTurn(String gameId, int betValue, int strategyId) {
+        Bet bet = new Bet(betValue);
         return getGameById(gameId)
                 .flatMap(game -> serviceExceptionHandler.exceptionPropagator(game, bet, strategyId, dealer::startTurn));
     }
 
-    public Mono<Turn> playTurn(String gameId, ActionChoice actionChoice, int strategyId) {
+    public Mono<Turn> playTurn(String gameId, String actionType, int strategyId) throws IllegalActionException {
+        ActionChoice actionChoice = new ActionChoice();
+        actionChoice.setActionType(matchStringToActionType(actionType));
         return getGameById(gameId)
                 .flatMap(game -> serviceExceptionHandler.exceptionPropagator(game,actionChoice,strategyId,dealer::playTurn));
+    }
+    private ActionType matchStringToActionType(String str) throws IllegalActionException {
+        return switch (str.toLowerCase().trim()){
+            case "hit" -> ActionType.HIT;
+            case "stand" -> ActionType.STAND;
+            case "double" -> ActionType.DOUBLE;
+            case "split" -> ActionType.SPLIT;
+            default -> throw new IllegalActionException("Unrecognized Action Type");
+        };
     }
 
     public Mono<Game> createNewGame(int numAutomaticPlayers, List<Player> interactivePlayers) {
