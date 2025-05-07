@@ -3,7 +3,13 @@ package aDarbellay.s05.t1.model.player;
 import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.actions.ActionType;
 import aDarbellay.s05.t1.model.games.PlayerStrategy;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.CLASS,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "@class"
+)
 public interface Player {
 
     void placeBet(PlayerStrategy playerStrategy, Integer quantity);
@@ -16,7 +22,7 @@ public interface Player {
         return !isInteractive();
     }
 
-    int getId();
+    long getId();
 
-    void setId(int i);
+    void setId(long i);
 }

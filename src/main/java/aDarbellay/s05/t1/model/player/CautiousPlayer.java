@@ -27,12 +27,12 @@ public class CautiousPlayer implements Player {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return 0;
     }
 
     @Override
-    public void setId(int i) {
+    public void setId(long i) {
 
     }
 
