@@ -26,4 +26,5 @@ public class DoubleBet implements Action {
                 "drawnCard=" + drawnCard +
                 '}';
     }
+
 }

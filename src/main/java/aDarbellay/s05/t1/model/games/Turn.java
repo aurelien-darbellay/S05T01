@@ -9,10 +9,10 @@ import java.util.List;
 public class Turn {
 
     private int id;
-    private List<PlayerStrategy> playerStrategies;
+    private List<PlayerStrategy> playerStrategies = new ArrayList<>();
     private Hand dealerHand;
     private ArrayList<Card> reserve = new ArrayList<>();
-    private TurnState turnState;
+    private TurnState turnState = TurnState.STARTED;
     private boolean isInputRequired;
     private String gameId;
 
@@ -36,7 +36,6 @@ public class Turn {
     }
 
     public Turn(int id) {
-        this.turnState = TurnState.STARTED;
         this.id = id;
     }
 

@@ -1,9 +1,9 @@
 package aDarbellay.s05.t1.service;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
+import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.exception.UntimelyActionException;
 import aDarbellay.s05.t1.model.Bet;
-import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.actions.Action;
 import aDarbellay.s05.t1.model.actions.ActionChoice;
 import aDarbellay.s05.t1.model.actions.DoubleBet;
@@ -15,6 +15,7 @@ import aDarbellay.s05.t1.model.games.PlayerStrategy;
 import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.model.hands.Hand;
 import aDarbellay.s05.t1.model.hands.Hand.Visibility;
+import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.validation.DealingValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,7 +89,7 @@ public class Dealer {
         return drawnCards;
     }
 
-    public Turn playTurn(Game game, ActionChoice actionChoice, int strategyId) throws EntityNotFoundException, UntimelyActionException {
+    public Turn playTurn(Game game, ActionChoice actionChoice, int strategyId) throws EntityNotFoundException, UntimelyActionException, IllegalActionException {
         Turn activeTurn = game.getActiveTurn();
         if (isNotReadyToPlayHands(game)) throw new UntimelyActionException(Action.class);
         activeTurn.setTurnState(Turn.TurnState.PLAYERS_CHOOSE_STRATEGY);
@@ -103,7 +104,7 @@ public class Dealer {
         return activeTurn;
     }
 
-    private void invitePlayersToPlayHand(Turn turn, ActionChoice actionChoice, int strategyId) throws EntityNotFoundException {
+    private void invitePlayersToPlayHand(Turn turn, ActionChoice actionChoice, int strategyId) throws EntityNotFoundException, IllegalActionException {
 
         Deque<PlayerStrategy> playsToRegister = new ArrayDeque<>(turn.getPlayerStrategies().stream().filter(this::isActionRequired).toList());
         while (!playsToRegister.isEmpty()) {
@@ -116,7 +117,7 @@ public class Dealer {
             turn.setTurnState(Turn.TurnState.HANDS_PLAYED);
     }
 
-    private void registerAction(Turn turn, PlayerStrategy playerStrategy, Deque<PlayerStrategy> turnsToPlay, ActionChoice actionChoice, int strategyId) throws EntityNotFoundException {
+    private void registerAction(Turn turn, PlayerStrategy playerStrategy, Deque<PlayerStrategy> turnsToPlay, ActionChoice actionChoice, int strategyId) throws EntityNotFoundException, IllegalActionException {
         Player player = playerStrategy.getPlayer();
         if (player.isAutomatic()) registerAutomaticAction(player, playerStrategy, turn, turnsToPlay);
         else if (player.isInteractive()) {
@@ -128,12 +129,11 @@ public class Dealer {
     private void registerAutomaticAction(Player player, PlayerStrategy playerStrategy, Turn turn, Deque<PlayerStrategy> turnsToPlay) {
         do {
             Action playerAction = player.pickAction(null);
-            dealingValidation.validateAction(playerAction, playerStrategy);
             playerAction.execute(turn, turnsToPlay, playerStrategy, this::getNCardFromReserve);
         } while (isActionRequired(playerStrategy));
     }
 
-    private void registerInteractiveAction(Player player, ActionChoice actionChoice, PlayerStrategy playerStrategy, int strategyId, Turn turn, Deque<PlayerStrategy> turnsToPlay) throws EntityNotFoundException {
+    private void registerInteractiveAction(Player player, ActionChoice actionChoice, PlayerStrategy playerStrategy, int strategyId, Turn turn, Deque<PlayerStrategy> turnsToPlay) throws EntityNotFoundException, IllegalActionException {
         if (playerStrategy.getId() == strategyId && !actionChoice.isUsed()) {
             Action playerAction = player.pickAction(actionChoice.getActionType());
             dealingValidation.validateAction(playerAction, playerStrategy);

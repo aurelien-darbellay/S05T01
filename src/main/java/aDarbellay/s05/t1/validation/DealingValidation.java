@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class DealingValidation {
     public void validateAction(Action playerAction, PlayerStrategy playerStrategy) throws IllegalActionException {
-
+        throw new IllegalActionException("Hola");
     }
 }
