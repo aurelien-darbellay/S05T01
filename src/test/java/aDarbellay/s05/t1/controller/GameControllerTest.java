@@ -1,19 +1,22 @@
 package aDarbellay.s05.t1.controller;
 
 import aDarbellay.s05.t1.dto.PlayerRequest;
+import aDarbellay.s05.t1.exception.IllegalActionException;
+import aDarbellay.s05.t1.model.actions.Stand;
 import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.PlayerStrategy;
 import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.player.RealPlayer;
-import aDarbellay.s05.t1.service.GameService;
-import aDarbellay.s05.t1.service.PlayerService;
+import aDarbellay.s05.t1.service.game.GameService;
+import aDarbellay.s05.t1.service.player.PlayerService;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
+
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
@@ -30,10 +33,10 @@ class GameControllerTest {
     @Autowired
     private WebTestClient webTestClient;
 
-    @MockBean
+    @MockitoBean
     private GameService gameService;
 
-    @MockBean
+    @MockitoBean
     private PlayerService playerService;
 
 
@@ -64,7 +67,7 @@ class GameControllerTest {
         player.setLastname("Darbellay");
         Game game = new Game();
         game.setPlayers(List.of(player));
-        when(playerService.getPlayerByName(request)).thenReturn(Mono.just((Player) player));
+        when(playerService.getPlayerByUserName(request)).thenReturn(Mono.just((Player) player));
         when(gameService.createNewGame(0,List.of(player))).thenReturn(Mono.just(game));
         webTestClient.post()
                 .uri("/game/new")
@@ -106,5 +109,33 @@ class GameControllerTest {
                    assertEquals(10,turn.getPlayerStrategies().getFirst().getBet());
                 });
 
+    }
+    @Test
+    void playTurn() throws IllegalActionException {
+
+        RealPlayer player = new RealPlayer();
+        player.setFirstname("Aurélien");
+        player.setLastname("Darbellay");
+        player.setId(1);
+        Game game = new Game();
+        game.setPlayers(List.of(player));
+        game.setId("11");
+        PlayerRequest request = new PlayerRequest();
+        request.setFirstName("Aurélien");
+        request.setLastName("Darbellay");
+        Turn newTurn = new Turn(1);
+        PlayerStrategy newPlayerStrategy = new PlayerStrategy(1,player);
+        newPlayerStrategy.setActions(List.of(new Stand()));
+        newTurn.setPlayerStrategies(List.of(newPlayerStrategy));
+
+        when(gameService.playTurn("11","stand",1)).thenReturn(Mono.just(newTurn));
+        webTestClient.post()
+                .uri("/game/11/play?actionType=stand&&playerId=1")
+                .exchange()
+                .expectBody(Turn.class)
+                .consumeWith(turnEntityExchangeResult -> {
+                    Turn turn = turnEntityExchangeResult.getResponseBody();
+                    assertInstanceOf(Stand.class,turn.getPlayerStrategies().getFirst().getActions().getFirst());
+                });
     }
 }

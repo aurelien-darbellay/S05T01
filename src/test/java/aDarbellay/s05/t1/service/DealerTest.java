@@ -2,6 +2,7 @@ package aDarbellay.s05.t1.service;
 
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
+import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.exception.UntimelyActionException;
 import aDarbellay.s05.t1.model.Bet;
 import aDarbellay.s05.t1.model.player.Player;
@@ -13,6 +14,7 @@ import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.PlayerStrategy;
 import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.model.hands.Hand;
+import aDarbellay.s05.t1.service.game.Dealer;
 import aDarbellay.s05.t1.validation.DealingValidation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -97,7 +99,7 @@ class DealerTest {
     }
 
     @Test
-    void runSplitTurnWithAutomaticPlayers() throws EntityNotFoundException, UntimelyActionException {
+    void runSplitTurnWithAutomaticPlayers() throws EntityNotFoundException, UntimelyActionException, IllegalActionException {
         game.setPlayers(automaticPlayers);
         Dealer bob = new Dealer(fullDeck, new DealingValidation());
         Turn newTurn = bob.startTurn(game, new Bet(0), 0);
@@ -109,7 +111,7 @@ class DealerTest {
     }
 
     @Test
-    void runSplitTurnWithOneInteractivePlayer() throws EntityNotFoundException, UntimelyActionException {
+    void runSplitTurnWithOneInteractivePlayer() throws EntityNotFoundException, UntimelyActionException, IllegalActionException {
         game.setPlayers(oneInteractivePlayer);
         Dealer bob = new Dealer(fullDeck, new DealingValidation());
         Turn newTurn = bob.startTurn(game, new Bet(10), 3);
@@ -125,7 +127,7 @@ class DealerTest {
     }
 
     @Test
-    void runTurnWithMixedPlayers() throws EntityNotFoundException, UntimelyActionException {
+    void runTurnWithMixedPlayers() throws EntityNotFoundException, UntimelyActionException, IllegalActionException {
         game.setPlayers(mixedPlayers);
         Dealer bob = new Dealer(fullDeck, new DealingValidation());
         Turn newTurn = bob.startTurn(game, new Bet(10), 3);
@@ -140,7 +142,7 @@ class DealerTest {
     }
 
     @Test
-    void runWithSplit() throws EntityNotFoundException, UntimelyActionException {
+    void runWithSplit() throws EntityNotFoundException, UntimelyActionException, IllegalActionException {
         game.setPlayers(oneInteractivePlayer);
         Dealer bob = new Dealer(fullDeck, new DealingValidation());
         Turn newTurn = bob.startTurn(game, new Bet(10), 3);

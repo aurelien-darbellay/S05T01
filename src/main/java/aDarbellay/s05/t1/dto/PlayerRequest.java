@@ -3,6 +3,7 @@ package aDarbellay.s05.t1.dto;
 import java.util.Objects;
 
 public class PlayerRequest {
+    private String userName;
     private String firstName;
     private String lastName;
 
@@ -20,6 +21,14 @@ public class PlayerRequest {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Override

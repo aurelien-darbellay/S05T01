@@ -5,8 +5,8 @@ import aDarbellay.s05.t1.dto.PlayerRequest;
 import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.Turn;
-import aDarbellay.s05.t1.service.GameService;
-import aDarbellay.s05.t1.service.PlayerService;
+import aDarbellay.s05.t1.service.game.GameService;
+import aDarbellay.s05.t1.service.player.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +40,7 @@ public class GameController {
     @PostMapping ("/new")
     @ResponseStatus (HttpStatus.CREATED)
     public Mono<Game> createGame(@RequestBody PlayerRequest playerRequest) {
-        return playerService.getPlayerByName(playerRequest)
+        return playerService.getPlayerByUserName(playerRequest)
                 .doOnNext(player -> System.out.println("DEBUG: Retrieved player = " + player))
                 .flatMap(player -> gameService.createNewGame(0, List.of(player)));
     }
@@ -52,6 +52,16 @@ public class GameController {
     @PostMapping("/{id}/play")
     public Mono<Turn> playTurn(@PathVariable String id, @RequestParam String actionType,@RequestParam int playerId) throws IllegalActionException {
         return gameService.playTurn(id, actionType, playerId);
+    }
+    @PostMapping("/{id}/save")
+    public Mono<Game> saveGame(@PathVariable String id){
+        Game game = gameService.getCachedGame(id);
+        return gameService.saveUpdatedGame(id,game);
+    }
+    @DeleteMapping("/{id}/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> deleteGameById(@PathVariable String id){
+        return gameService.deleteById(id);
     }
 
 

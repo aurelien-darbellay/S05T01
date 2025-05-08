@@ -1,15 +1,18 @@
 package aDarbellay.s05.t1.service;
 
+import aDarbellay.s05.t1.controller.GameController;
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
 import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.exception.ServiceExceptionHandler;
-import aDarbellay.s05.t1.model.Bet;
 import aDarbellay.s05.t1.model.player.Player;
-import aDarbellay.s05.t1.model.actions.ActionChoice;
 import aDarbellay.s05.t1.model.cards.Deck;
 import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.model.player.PlayerFactory;
+import aDarbellay.s05.t1.service.game.Dealer;
+import aDarbellay.s05.t1.service.game.GameManager;
+import aDarbellay.s05.t1.service.game.GameService;
+import aDarbellay.s05.t1.service.player.PlayerService;
 import aDarbellay.s05.t1.validation.DealingValidation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -27,8 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @DataMongoTest
-@Import({GameService.class, Dealer.class, Deck.class, DealingValidation.class, GameManager.class, ServiceExceptionHandler.class, PlayerFactory.class})
+@Import({GameService.class, Dealer.class, Deck.class, DealingValidation.class, GameManager.class, ServiceExceptionHandler.class, PlayerFactory.class, GameController.class, PlayerService.class})
 class GameServiceTest {
 
     @Autowired
@@ -128,6 +134,24 @@ class GameServiceTest {
         Game activeGame = gameService.getCachedGame("gameWithTwoPlayers");
         System.out.println(activeGame);
         System.out.println(activeGame.getTurnsPlayed());
+        Mono<Turn> finishedResult = gameService.playTurn(activeGame.getId(),"hit",0).
+                doOnNext(turn -> {
+                    System.out.println(turn);
+                    System.out.println(activeGame.getTurnsPlayed());
+                    gameService.saveUpdatedGame(activeGame.getId(),activeGame).block();
+                });
+
+        StepVerifier.create(finishedResult).expectNextMatches(Objects::nonNull).verifyComplete();
+    }
+
+    @Test
+    void playTurnWithOnePlayer() throws IllegalActionException {
+        Mono<Turn> result = gameService.startNewTurn("681c74db5fddf55897718b9e",10,0)
+                .doOnNext(System.out::println);
+        StepVerifier.create(result).consumeNextWith(turn ->{
+        assertEquals(10,turn.getPlayerStrategies().getFirst().getBet());
+        assertEquals(Turn.TurnState.HANDS_DISTRIBUTED,turn.getTurnState());}).verifyComplete();
+        Game activeGame = gameService.getCachedGame("681c74db5fddf55897718b9e");
         Mono<Turn> finishedResult = gameService.playTurn(activeGame.getId(),"hit",0).
                 doOnNext(turn -> {
                     System.out.println(turn);
