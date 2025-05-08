@@ -9,6 +9,7 @@ import aDarbellay.s05.t1.model.player.RealPlayer;
 import aDarbellay.s05.t1.service.game.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -36,7 +37,11 @@ public class RankingManager {
         turn.getPlayerStrategies().stream()
                 .filter(playerStrategy -> playerHasStrategy(player,playerStrategy))
                 .forEach(playerStrategy->{
-                    calculatePlayerPoints(playerStrategy,player);
+                    try {
+                        calculatePlayerPoints(playerStrategy,player);
+                    } catch (UnfinishedBusinessException e) {
+                        // throw Exceptions.propagate(e);
+                    }
                 });
     }
     private void calculatePlayerPoints(PlayerStrategy playerStrategy, RealPlayer player) throws UnfinishedBusinessException {
