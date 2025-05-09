@@ -40,4 +40,19 @@ public class CautiousPlayer implements Player {
         return 0;
     }
 
+    @Override
+    public String getFirstName() {
+        return "Cautious";
+    }
+
+    @Override
+    public String getLastName() {
+        return "Player";
+    }
+
+    @Override
+    public String getUserName() {
+        return "cautiousPlayer";
+    }
+
 }

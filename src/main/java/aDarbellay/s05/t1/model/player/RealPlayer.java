@@ -2,16 +2,18 @@ package aDarbellay.s05.t1.model.player;
 
 import aDarbellay.s05.t1.model.actions.*;
 import aDarbellay.s05.t1.model.games.PlayerStrategy;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
+@Table("player")
+public class RealPlayer implements Player {
 
-public class RealPlayer implements Player{
-
+    @Id
     private int id;
-    private String username;
-    private String firstname;
-    private String lastname;
+    private String userName;
+    private String firstName;
+    private String lastName;
     private long points = 0;
-
 
 
     @Override
@@ -44,20 +46,20 @@ public class RealPlayer implements Player{
         this.id = id;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public long getPoints() {
@@ -68,13 +70,15 @@ public class RealPlayer implements Player{
         this.points = points;
     }
 
-    public void addPoints(long x) {this.points += x;}
-
-    public String getUsername() {
-        return username;
+    public void addPoints(long x) {
+        this.points += x;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

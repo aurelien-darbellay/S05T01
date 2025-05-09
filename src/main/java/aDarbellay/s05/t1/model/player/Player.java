@@ -27,4 +27,11 @@ public interface Player {
     void setId(int i);
 
     long getPoints();
+
+    String getFirstName();
+
+    String getLastName();
+
+    String getUserName();
+
 }

@@ -20,7 +20,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
-    implementation 'dev.miku:r2dbc-mysql:0.8.2.RELEASE'
+    implementation 'io.asyncer:r2dbc-mysql:1.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

@@ -30,12 +30,26 @@ public class RandomPlayer implements Player {
 
     @Override
     public void setId(int i) {
-
     }
 
     @Override
     public long getPoints() {
         return 0;
+    }
+
+    @Override
+    public String getFirstName() {
+        return "Random";
+    }
+
+    @Override
+    public String getLastName() {
+        return "Player";
+    }
+
+    @Override
+    public String getUserName() {
+        return "randomPlayer";
     }
 
     @Override

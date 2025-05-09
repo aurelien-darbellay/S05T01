@@ -16,9 +16,9 @@ import java.util.Optional;
 @Service
 public class PlayerService {
 
-    private PlayerFactory factory;
-    private PlayerRepository playerRepository;
-    private RankingManager rankingManager;
+    private final PlayerFactory factory;
+    private final PlayerRepository playerRepository;
+    private final RankingManager rankingManager;
 
     @Autowired
     public PlayerService(PlayerFactory factory, PlayerRepository playerRepository, RankingManager rankingManager) {
@@ -27,41 +27,50 @@ public class PlayerService {
         this.rankingManager = rankingManager;
     }
 
-    public Mono<Player> getPlayerByUserName(PlayerRequest request){
-        return Mono.just(factory.createNewPlayer(request.getFirstName(), request.getLastName(),request.getUserName()));
+    public Mono<Player> getOrCreatePlayer(PlayerRequest request) {
+        return getPlayerByUsername(request.getUserName())
+                .switchIfEmpty(savePlayer(factory.createNewPlayer(request.getFirstName(), request.getLastName(), request.getUserName())));
     }
 
-    public Mono<Player> savePlayer(RealPlayer player){
+    public Mono<Player> savePlayer(RealPlayer player) {
         return playerRepository.save(player).map(realPlayer -> (Player) realPlayer);
     }
 
-    public Mono<Player> getPlayerByUsername(String userName){
-        return playerRepository.findByUsername(userName).map(realPlayer -> (Player) realPlayer);
+    public Mono<Player> getPlayerByUsername(String userName) {
+        return playerRepository.findByUserName(userName).map(realPlayer -> (Player) realPlayer);
     }
-    public Mono<Player> changePlayerNames(String userName,PlayerRequest request){
-        return playerRepository.findByUsername(userName)
-                .map(player ->{
+
+    public Mono<Integer> getPlayerId(String username) {
+        return getPlayerByUsername(username).map(Player::getId);
+    }
+
+    public Mono<Player> changePlayerNames(String userName, PlayerRequest request) {
+        return playerRepository.findByUserName(userName)
+                .map(player -> {
                     Optional.ofNullable(request.getFirstName())
                             .filter(s -> !s.isBlank())
-                            .ifPresent(player::setFirstname);
+                            .ifPresent(player::setFirstName);
                     Optional.ofNullable(request.getLastName())
                             .filter(s -> !s.isBlank())
-                            .ifPresent(player::setLastname);
+                            .ifPresent(player::setLastName);
                     Optional.ofNullable(request.getUserName())
                             .filter(s -> !s.isBlank())
-                            .ifPresent(player::setUsername);
+                            .ifPresent(player::setUserName);
                     return player;
                 })
-                .flatMap(realPlayer -> playerRepository.save(realPlayer))
+                .flatMap(playerRepository::save)
                 .map(realplayer -> (Player) realplayer);
     }
 
-    public Flux<Player> updatePlayersPoints(){
-        return rankingManager.calculatePlayersPoints(playerRepository.findAll());
+    public Flux<Player> updatePlayersPoints() {
+        return rankingManager
+                .calculatePlayersPoints(playerRepository.findAll())
+                .flatMap(player -> playerRepository.save((RealPlayer) player));
     }
-    public Flux<Player> getPlayersRanking(){
+
+    public Flux<Player> getPlayersRanking() {
         return updatePlayersPoints()
-                .collectSortedList(Comparator.comparing(Player::getPoints))
+                .collectSortedList(Comparator.comparing(Player::getPoints).reversed())
                 .flatMapMany(Flux::fromIterable);
     }
 

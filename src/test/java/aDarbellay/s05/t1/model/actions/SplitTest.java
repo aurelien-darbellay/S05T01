@@ -1,11 +1,11 @@
 package aDarbellay.s05.t1.model.actions;
 
-import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.cards.Card;
 import aDarbellay.s05.t1.model.cards.Deck;
 import aDarbellay.s05.t1.model.games.PlayerStrategy;
 import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.model.hands.Hand;
+import aDarbellay.s05.t1.model.player.Player;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayDeque;
@@ -46,6 +46,21 @@ class SplitTest {
         @Override
         public long getPoints() {
             return 0;
+        }
+
+        @Override
+        public String getFirstName() {
+            return "";
+        }
+
+        @Override
+        public String getLastName() {
+            return "";
+        }
+
+        @Override
+        public String getUserName() {
+            return "";
         }
     }
 

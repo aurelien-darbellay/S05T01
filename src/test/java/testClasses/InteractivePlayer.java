@@ -1,8 +1,8 @@
 package testClasses;
 
-import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.actions.*;
 import aDarbellay.s05.t1.model.games.PlayerStrategy;
+import aDarbellay.s05.t1.model.player.Player;
 
 public class InteractivePlayer implements Player {
     private int id;
@@ -40,6 +40,21 @@ public class InteractivePlayer implements Player {
     @Override
     public long getPoints() {
         return 0;
+    }
+
+    @Override
+    public String getFirstName() {
+        return "Interactive";
+    }
+
+    @Override
+    public String getLastName() {
+        return "Player";
+    }
+
+    @Override
+    public String getUserName() {
+        return "interactivePlayer";
     }
 
     @Override

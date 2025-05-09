@@ -9,5 +9,5 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface PlayerRepository extends R2dbcRepository<RealPlayer,Integer> {
-    Mono<RealPlayer> findByUsername(String username);
+    Mono<RealPlayer> findByUserName(String userName);
 }
