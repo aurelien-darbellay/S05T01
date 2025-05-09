@@ -1,4 +1,4 @@
-package aDarbellay.s05.t1.service;
+package aDarbellay.s05.t1.service.game;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
 import aDarbellay.s05.t1.exception.IllegalActionException;
@@ -126,7 +126,7 @@ public class Dealer {
         }
     }
 
-    private void registerAutomaticAction(Player player, PlayerStrategy playerStrategy, Turn turn, Deque<PlayerStrategy> turnsToPlay) {
+    private void registerAutomaticAction(Player player, PlayerStrategy playerStrategy, Turn turn, Deque<PlayerStrategy> turnsToPlay) throws IllegalActionException {
         do {
             Action playerAction = player.pickAction(null);
             playerAction.execute(turn, turnsToPlay, playerStrategy, this::getNCardFromReserve);

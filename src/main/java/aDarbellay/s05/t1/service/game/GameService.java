@@ -1,4 +1,4 @@
-package aDarbellay.s05.t1.service;
+package aDarbellay.s05.t1.service.game;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
 
@@ -55,15 +55,8 @@ public class GameService {
     }
 
     public Mono<Game> saveUpdatedGame(String id, Game updatedGame) {
-        return gameRepository.findById(id)
-                .switchIfEmpty(Mono.error(new EntityNotFoundException(Game.class, id)))
-                .map(game -> {
-                    game.setPlayers(updatedGame.getPlayers());
-                    game.setTurnsPlayed(updatedGame.getTurnsPlayed());
-                    game.setActiveTurn(updatedGame.getActiveTurn());
-                    return game;
-                })
-                .flatMap(gameRepository::save);
+        updatedGame.setId(id);
+        return saveGame(updatedGame);
     }
 
     public Mono<Void> deleteGame(Game game) {

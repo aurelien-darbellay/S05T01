@@ -3,27 +3,29 @@ package aDarbellay.s05.t1.controller;
 import aDarbellay.s05.t1.dto.PlayerRequest;
 import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.model.actions.Stand;
-import aDarbellay.s05.t1.model.cards.Card;
 import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.PlayerStrategy;
 import aDarbellay.s05.t1.model.games.Turn;
-import aDarbellay.s05.t1.model.hands.Hand;
 import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.player.RealPlayer;
-import aDarbellay.s05.t1.service.GameService;
-import aDarbellay.s05.t1.service.PlayerService;
+import aDarbellay.s05.t1.service.game.GameService;
+import aDarbellay.s05.t1.service.player.PlayerService;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+
+
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 
 @WebFluxTest(GameController.class)
 class GameControllerTest {
@@ -51,11 +53,10 @@ class GameControllerTest {
                 .expectBody(Game.class)
                 .consumeWith(gameEntityExchangeResult -> {
                     Game game = gameEntityExchangeResult.getResponseBody();
-                    assertEquals(mockGame, game);
+                    assertEquals(mockGame,game);
                     System.out.println(game.getPlayers());
                 });
     }
-
     @Test
     void createGame() {
         PlayerRequest request = new PlayerRequest();
@@ -66,8 +67,8 @@ class GameControllerTest {
         player.setLastname("Darbellay");
         Game game = new Game();
         game.setPlayers(List.of(player));
-        when(playerService.getPlayerByName(request)).thenReturn(Mono.just((Player) player));
-        when(gameService.createNewGame(0, List.of(player))).thenReturn(Mono.just(game));
+        when(playerService.getPlayerByUserName(request)).thenReturn(Mono.just((Player) player));
+        when(gameService.createNewGame(0,List.of(player))).thenReturn(Mono.just(game));
         webTestClient.post()
                 .uri("/game/new")
                 .bodyValue(request)
@@ -82,7 +83,7 @@ class GameControllerTest {
     }
 
     @Test
-    void startTurn() {
+    void startTurn(){
         RealPlayer player = new RealPlayer();
         player.setFirstname("Aurélien");
         player.setLastname("Darbellay");

@@ -1,4 +1,4 @@
-package aDarbellay.s05.t1.service;
+package aDarbellay.s05.t1.service.game;
 
 import aDarbellay.s05.t1.model.games.Game;
 import org.springframework.beans.factory.annotation.Autowired;
