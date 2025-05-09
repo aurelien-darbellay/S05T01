@@ -33,7 +33,11 @@ public class CautiousPlayer implements Player {
 
     @Override
     public void setId(int i) {
+    }
 
+    @Override
+    public long getPoints() {
+        return 0;
     }
 
 }

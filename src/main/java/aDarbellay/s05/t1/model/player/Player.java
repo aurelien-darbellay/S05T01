@@ -25,4 +25,6 @@ public interface Player {
     int getId();
 
     void setId(int i);
+
+    long getPoints();
 }

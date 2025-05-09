@@ -38,6 +38,11 @@ public class InteractivePlayer implements Player {
     }
 
     @Override
+    public long getPoints() {
+        return 0;
+    }
+
+    @Override
     public String toString() {
         return "InteractivePlayer{}";
     }

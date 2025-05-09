@@ -7,8 +7,10 @@ import aDarbellay.s05.t1.model.player.RealPlayer;
 import aDarbellay.s05.t1.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Comparator;
 import java.util.Optional;
 
 @Service
@@ -16,11 +18,13 @@ public class PlayerService {
 
     private PlayerFactory factory;
     private PlayerRepository playerRepository;
+    private RankingManager rankingManager;
 
     @Autowired
-    public PlayerService(PlayerFactory factory, PlayerRepository playerRepository) {
+    public PlayerService(PlayerFactory factory, PlayerRepository playerRepository, RankingManager rankingManager) {
         this.playerRepository = playerRepository;
         this.factory = factory;
+        this.rankingManager = rankingManager;
     }
 
     public Mono<Player> getPlayerByUserName(PlayerRequest request){
@@ -50,6 +54,15 @@ public class PlayerService {
                 })
                 .flatMap(realPlayer -> playerRepository.save(realPlayer))
                 .map(realplayer -> (Player) realplayer);
+    }
+
+    public Flux<Player> updatePlayersPoints(){
+        return rankingManager.calculatePlayersPoints(playerRepository.findAll());
+    }
+    public Flux<Player> getPlayersRanking(){
+        return updatePlayersPoints()
+                .collectSortedList(Comparator.comparing(Player::getPoints))
+                .flatMapMany(Flux::fromIterable);
     }
 
 }

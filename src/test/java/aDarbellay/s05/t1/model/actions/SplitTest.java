@@ -42,6 +42,11 @@ class SplitTest {
         public void setId(int i) {
 
         }
+
+        @Override
+        public long getPoints() {
+            return 0;
+        }
     }
 
     static private List<Card> getNCardFromReserve(int n, List<Card> reserve) {

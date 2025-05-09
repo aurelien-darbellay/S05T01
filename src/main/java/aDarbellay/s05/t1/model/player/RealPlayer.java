@@ -68,6 +68,8 @@ public class RealPlayer implements Player{
         this.points = points;
     }
 
+    public void addPoints(long x) {this.points += x;}
+
     public String getUsername() {
         return username;
     }
