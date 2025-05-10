@@ -3,12 +3,14 @@ package aDarbellay.s05.t1.service;
 import aDarbellay.s05.t1.controller.GameController;
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
 import aDarbellay.s05.t1.exception.IllegalActionException;
-import aDarbellay.s05.t1.exception.ServiceExceptionHandler;
-import aDarbellay.s05.t1.model.player.Player;
+import aDarbellay.s05.t1.exception.handlers.ServiceExceptionHandler;
 import aDarbellay.s05.t1.model.cards.Deck;
 import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.Turn;
+import aDarbellay.s05.t1.model.player.CautiousPlayer;
+import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.player.PlayerFactory;
+import aDarbellay.s05.t1.model.player.RandomPlayer;
 import aDarbellay.s05.t1.service.game.Dealer;
 import aDarbellay.s05.t1.service.game.GameManager;
 import aDarbellay.s05.t1.service.game.GameService;
@@ -22,16 +24,13 @@ import org.springframework.context.annotation.Import;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import aDarbellay.s05.t1.model.player.CautiousPlayer;
 import testClasses.InteractivePlayer;
-import aDarbellay.s05.t1.model.player.RandomPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataMongoTest
 @Import({GameService.class, Dealer.class, Deck.class, DealingValidation.class, GameManager.class, ServiceExceptionHandler.class, PlayerFactory.class, GameController.class, PlayerService.class})
@@ -81,7 +80,7 @@ class GameServiceTest {
                 .doOnNext((game) -> System.out.println(gameService.getCachedGame("gameToTestAgain")));
 
         StepVerifier.create(result)
-                        .expectNextMatches(game -> game.getId().equals("gameToTestAgain")).verifyComplete();
+                .expectNextMatches(game -> game.getId().equals("gameToTestAgain")).verifyComplete();
     }
 
 
@@ -128,17 +127,17 @@ class GameServiceTest {
 
     @Test
     void playTurnWithAutomaticPlayers() throws IllegalActionException {
-        Mono<Turn> result = gameService.startNewTurn("gameWithTwoPlayers",0,0)
+        Mono<Turn> result = gameService.startNewTurn("gameWithTwoPlayers", 0, 0)
                 .doOnNext(System.out::println);
-        StepVerifier.create(result).expectNextMatches(turn -> turn.getPlayerStrategies().size()==2).verifyComplete();
+        StepVerifier.create(result).expectNextMatches(turn -> turn.getPlayerStrategies().size() == 2).verifyComplete();
         Game activeGame = gameService.getCachedGame("gameWithTwoPlayers");
         System.out.println(activeGame);
         System.out.println(activeGame.getTurnsPlayed());
-        Mono<Turn> finishedResult = gameService.playTurn(activeGame.getId(),"hit",0).
+        Mono<Turn> finishedResult = gameService.playTurn(activeGame.getId(), "hit", 0).
                 doOnNext(turn -> {
                     System.out.println(turn);
                     System.out.println(activeGame.getTurnsPlayed());
-                    gameService.saveUpdatedGame(activeGame.getId(),activeGame).block();
+                    gameService.saveUpdatedGame(activeGame.getId(), activeGame).block();
                 });
 
         StepVerifier.create(finishedResult).expectNextMatches(Objects::nonNull).verifyComplete();
@@ -146,29 +145,30 @@ class GameServiceTest {
 
     @Test
     void playTurnWithOnePlayer() throws IllegalActionException {
-        Mono<Turn> result = gameService.startNewTurn("681c74db5fddf55897718b9e",10,0)
+        Mono<Turn> result = gameService.startNewTurn("681c74db5fddf55897718b9e", 10, 0)
                 .doOnNext(System.out::println);
-        StepVerifier.create(result).consumeNextWith(turn ->{
-        assertEquals(10,turn.getPlayerStrategies().getFirst().getBet());
-        assertEquals(Turn.TurnState.HANDS_DISTRIBUTED,turn.getTurnState());}).verifyComplete();
+        StepVerifier.create(result).consumeNextWith(turn -> {
+            assertEquals(10, turn.getPlayerStrategies().getFirst().getBet());
+            assertEquals(Turn.TurnState.HANDS_DISTRIBUTED, turn.getTurnState());
+        }).verifyComplete();
         Game activeGame = gameService.getCachedGame("681c74db5fddf55897718b9e");
-        Mono<Turn> finishedResult = gameService.playTurn(activeGame.getId(),"hit",0).
+        Mono<Turn> finishedResult = gameService.playTurn(activeGame.getId(), "hit", 0).
                 doOnNext(turn -> {
                     System.out.println(turn);
                     System.out.println(activeGame.getTurnsPlayed());
-                    gameService.saveUpdatedGame(activeGame.getId(),activeGame).block();
+                    gameService.saveUpdatedGame(activeGame.getId(), activeGame).block();
                 });
 
         StepVerifier.create(finishedResult).expectNextMatches(Objects::nonNull).verifyComplete();
     }
 
     @Test
-    void createNewGame(){
-        Mono<Game> result = gameService.createNewGame(3,oneInteractivePlayer)
+    void createNewGame() {
+        Mono<Game> result = gameService.createNewGame(3, oneInteractivePlayer)
                 .doOnNext(game -> {
                     game.getPlayers().forEach(System.out::println);
                 })
-                .flatMap(game-> gameService.getGameById(game.getId()));
+                .flatMap(game -> gameService.getGameById(game.getId()));
         StepVerifier.create(result).expectNextMatches(game -> !game.isGameOn()).verifyComplete();
     }
 

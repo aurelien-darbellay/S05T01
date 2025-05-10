@@ -1,6 +1,7 @@
 package aDarbellay.s05.t1.service.player;
 
 import aDarbellay.s05.t1.dto.PlayerRequest;
+import aDarbellay.s05.t1.exception.EntityNotFoundException;
 import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.player.PlayerFactory;
 import aDarbellay.s05.t1.model.player.RealPlayer;
@@ -37,7 +38,9 @@ public class PlayerService {
     }
 
     public Mono<Player> getPlayerByUsername(String userName) {
-        return playerRepository.findByUserName(userName).map(realPlayer -> (Player) realPlayer);
+        return playerRepository.findByUserName(userName)
+                .switchIfEmpty(Mono.error(new EntityNotFoundException(RealPlayer.class, userName)))
+                .map(realPlayer -> (Player) realPlayer);
     }
 
     public Mono<Integer> getPlayerId(String username) {
@@ -46,6 +49,7 @@ public class PlayerService {
 
     public Mono<Player> changePlayerNames(String userName, PlayerRequest request) {
         return playerRepository.findByUserName(userName)
+                .switchIfEmpty(Mono.error(new EntityNotFoundException(RealPlayer.class, userName)))
                 .map(player -> {
                     Optional.ofNullable(request.getFirstName())
                             .filter(s -> !s.isBlank())

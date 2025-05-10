@@ -44,7 +44,7 @@ public class RankingManager {
     }
 
     private boolean playerHasStrategy(RealPlayer player, PlayerStrategy playerStrategy) {
-        return playerStrategy.getId() == player.getId() || playerStrategy.getId() % (player.getId() * 10) == 0;
+        return playerStrategy.getId() == player.getId() || (playerStrategy.getId() % (player.getId() * 10) == 0 && playerStrategy.getId() < 0);
     }
 
     private boolean gameHasPlayer(Game game, RealPlayer player) {

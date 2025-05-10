@@ -1,15 +1,14 @@
 package aDarbellay.s05.t1.service.game;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
-
 import aDarbellay.s05.t1.exception.IllegalActionException;
-import aDarbellay.s05.t1.exception.ServiceExceptionHandler;
+import aDarbellay.s05.t1.exception.handlers.ServiceExceptionHandler;
 import aDarbellay.s05.t1.model.Bet;
-import aDarbellay.s05.t1.model.actions.ActionType;
-import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.actions.ActionChoice;
+import aDarbellay.s05.t1.model.actions.ActionType;
 import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.Turn;
+import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.player.PlayerFactory;
 import aDarbellay.s05.t1.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,30 +80,22 @@ public class GameService {
 
     public Mono<Turn> playTurn(String gameId, String actionType, int strategyId) throws IllegalActionException {
         ActionChoice actionChoice = new ActionChoice();
-        actionChoice.setActionType(matchStringToActionType(actionType));
+        actionChoice.setActionType(ActionType.matchStringToActionType(actionType));
         return getGameById(gameId)
-                .flatMap(game -> serviceExceptionHandler.exceptionPropagator(game,actionChoice,strategyId,dealer::playTurn));
+                .flatMap(game -> serviceExceptionHandler.exceptionPropagator(game, actionChoice, strategyId, dealer::playTurn));
     }
-    private ActionType matchStringToActionType(String str) throws IllegalActionException {
-        return switch (str.toLowerCase().trim()){
-            case "hit" -> ActionType.HIT;
-            case "stand" -> ActionType.STAND;
-            case "double" -> ActionType.DOUBLE;
-            case "split" -> ActionType.SPLIT;
-            default -> throw new IllegalActionException("Unrecognized Action Type");
-        };
-    }
+
 
     public Mono<Game> createNewGame(int numAutomaticPlayers, List<Player> interactivePlayers) {
         List<Player> players = new ArrayList<>(interactivePlayers);
-        IntStream.range(1,numAutomaticPlayers).forEach(num->players.add(playerFactory.createNewPlayer()));
+        IntStream.range(1, numAutomaticPlayers).forEach(num -> players.add(playerFactory.createNewPlayer()));
         Collections.shuffle(players);
         Game newGame = new Game();
         newGame.setPlayers(players);
         return gameRepository.save(newGame);
     }
 
-    public Game getCachedGame(String id){
+    public Game getCachedGame(String id) {
         return gameManager.getGameFromCache(id);
     }
 }
