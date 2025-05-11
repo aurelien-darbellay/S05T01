@@ -2,6 +2,7 @@ package aDarbellay.s05.t1.exception.handlers;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
 import aDarbellay.s05.t1.exception.IllegalActionException;
+import aDarbellay.s05.t1.exception.IllegalBetException;
 import aDarbellay.s05.t1.exception.UntimelyActionException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -31,11 +32,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(400).body(new ErrorResponse("ILLEGAL_ACTION", ex.getMessage()));
     }
 
+    @ExceptionHandler(IllegalBetException.class)
+    public ResponseEntity<ErrorResponse> IllegalBetException(IllegalBetException ex) {
+        return ResponseEntity.status(400).body(new ErrorResponse("ILLEGAL_BET", ex.getMessage()));
+    }
+
     @ExceptionHandler(UntimelyActionException.class)
     public ResponseEntity<ErrorResponse> UntimelyActionException(UntimelyActionException ex) {
         return ResponseEntity.status(400).body(new ErrorResponse("UNTIMELY_ACTION", ex.getMessage()));
     }
-    
+
     public record ErrorResponse(String code, String message) {
     }
 

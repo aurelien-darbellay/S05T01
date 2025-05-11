@@ -2,15 +2,14 @@ package aDarbellay.s05.t1.controller;
 
 
 import aDarbellay.s05.t1.dto.PlayerRequest;
-import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.service.game.GameService;
 import aDarbellay.s05.t1.service.player.PlayerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -41,7 +40,7 @@ public class GameController {
 
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Game> createGame(@RequestBody PlayerRequest playerRequest) {
+    public Mono<Game> createGame(@RequestBody @Valid PlayerRequest playerRequest) {
         return playerService.getOrCreatePlayer(playerRequest)
                 .doOnNext(player -> System.out.println("DEBUG: Retrieved player = " + player))
                 .flatMap(player -> gameService.createNewGame(0, List.of(player)));
@@ -54,15 +53,9 @@ public class GameController {
     }
 
     @PostMapping("/{id}/play")
-    public Mono<Turn> playTurn(@PathVariable String id, @RequestParam String actionType, @RequestParam String username) throws IllegalActionException {
+    public Mono<Turn> playTurn(@PathVariable String id, @RequestParam String actionType, @RequestParam String username) {
         return playerService.getPlayerId(username)
-                .flatMap(playerId -> {
-                    try {
-                        return gameService.playTurn(id, actionType, playerId);
-                    } catch (IllegalActionException e) {
-                        throw Exceptions.propagate(e);
-                    }
-                });
+                .flatMap(playerId -> gameService.playTurn(id, actionType, playerId));
     }
 
     @PostMapping("/{id}/save")

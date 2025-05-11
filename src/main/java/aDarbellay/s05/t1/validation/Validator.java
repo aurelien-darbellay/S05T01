@@ -1,8 +1,8 @@
 package aDarbellay.s05.t1.validation;
 
-import aDarbellay.s05.t1.model.actions.Action;
-import aDarbellay.s05.t1.model.games.PlayerStrategy;
+import aDarbellay.s05.t1.exception.IllegalActionException;
+import aDarbellay.s05.t1.exception.IllegalBetException;
 
 public interface Validator {
-    boolean validate(Action action, PlayerStrategy strategy);
+    void validate(ValidationContext validationContext) throws IllegalBetException, IllegalActionException;
 }

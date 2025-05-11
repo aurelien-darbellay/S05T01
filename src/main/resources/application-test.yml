@@ -1,0 +1,6 @@
+#BlackJack TestConfig
+blackjack:
+  dev:
+    betMin: 20
+    betMax: 100
+    noDoubleSplitWithAs: true

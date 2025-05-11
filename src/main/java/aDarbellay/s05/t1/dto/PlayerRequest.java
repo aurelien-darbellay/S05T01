@@ -1,8 +1,11 @@
 package aDarbellay.s05.t1.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.Objects;
 
 public class PlayerRequest {
+    @NotBlank(message = "Username is required")
     private String userName;
     private String firstName;
     private String lastName;

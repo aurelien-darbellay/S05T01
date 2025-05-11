@@ -3,9 +3,9 @@ package aDarbellay.s05.t1.service;
 
 import aDarbellay.s05.t1.exception.EntityNotFoundException;
 import aDarbellay.s05.t1.exception.IllegalActionException;
+import aDarbellay.s05.t1.exception.IllegalBetException;
 import aDarbellay.s05.t1.exception.UntimelyActionException;
 import aDarbellay.s05.t1.model.Bet;
-import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.actions.ActionChoice;
 import aDarbellay.s05.t1.model.actions.ActionType;
 import aDarbellay.s05.t1.model.cards.Card;
@@ -14,13 +14,14 @@ import aDarbellay.s05.t1.model.games.Game;
 import aDarbellay.s05.t1.model.games.PlayerStrategy;
 import aDarbellay.s05.t1.model.games.Turn;
 import aDarbellay.s05.t1.model.hands.Hand;
+import aDarbellay.s05.t1.model.player.CautiousPlayer;
+import aDarbellay.s05.t1.model.player.Player;
+import aDarbellay.s05.t1.model.player.RandomPlayer;
 import aDarbellay.s05.t1.service.game.Dealer;
 import aDarbellay.s05.t1.validation.DealingValidation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import aDarbellay.s05.t1.model.player.CautiousPlayer;
 import testClasses.InteractivePlayer;
-import aDarbellay.s05.t1.model.player.RandomPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +100,7 @@ class DealerTest {
     }
 
     @Test
-    void runSplitTurnWithAutomaticPlayers() throws EntityNotFoundException, UntimelyActionException, IllegalActionException {
+    void runSplitTurnWithAutomaticPlayers() throws EntityNotFoundException, UntimelyActionException, IllegalActionException, IllegalBetException {
         game.setPlayers(automaticPlayers);
         Dealer bob = new Dealer(fullDeck, new DealingValidation());
         Turn newTurn = bob.startTurn(game, new Bet(0), 0);
@@ -111,7 +112,7 @@ class DealerTest {
     }
 
     @Test
-    void runSplitTurnWithOneInteractivePlayer() throws EntityNotFoundException, UntimelyActionException, IllegalActionException {
+    void runSplitTurnWithOneInteractivePlayer() throws EntityNotFoundException, UntimelyActionException, IllegalActionException, IllegalBetException {
         game.setPlayers(oneInteractivePlayer);
         Dealer bob = new Dealer(fullDeck, new DealingValidation());
         Turn newTurn = bob.startTurn(game, new Bet(10), 3);
@@ -127,7 +128,7 @@ class DealerTest {
     }
 
     @Test
-    void runTurnWithMixedPlayers() throws EntityNotFoundException, UntimelyActionException, IllegalActionException {
+    void runTurnWithMixedPlayers() throws EntityNotFoundException, UntimelyActionException, IllegalActionException, IllegalBetException {
         game.setPlayers(mixedPlayers);
         Dealer bob = new Dealer(fullDeck, new DealingValidation());
         Turn newTurn = bob.startTurn(game, new Bet(10), 3);
@@ -142,7 +143,7 @@ class DealerTest {
     }
 
     @Test
-    void runWithSplit() throws EntityNotFoundException, UntimelyActionException, IllegalActionException {
+    void runWithSplit() throws EntityNotFoundException, UntimelyActionException, IllegalActionException, IllegalBetException {
         game.setPlayers(oneInteractivePlayer);
         Dealer bob = new Dealer(fullDeck, new DealingValidation());
         Turn newTurn = bob.startTurn(game, new Bet(10), 3);
@@ -151,7 +152,7 @@ class DealerTest {
         Card secondCard = hand.get(1);
         hand.remove(secondCard);
         newTurn.getReserve().add(secondCard);
-        Card firstCardTwin = newTurn.getReserve().stream().filter(card -> card.getPoints()==hand.getFirst().getPoints()).findFirst().orElse(null);
+        Card firstCardTwin = newTurn.getReserve().stream().filter(card -> card.getPoints() == hand.getFirst().getPoints()).findFirst().orElse(null);
         hand.add(firstCardTwin);
         ActionChoice actionChoice = new ActionChoice();
         actionChoice.setActionType(ActionType.SPLIT);
