@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
-class PlayerServiceTest {
+class PlayerDTOServiceTest {
 
     @Autowired
     PlayerService playerService;

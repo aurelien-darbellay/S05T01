@@ -32,6 +32,10 @@ public class PlayerService {
         return getPlayerByUsername(request.getUserName())
                 .switchIfEmpty(savePlayer(factory.createNewPlayer(request.getFirstName(), request.getLastName(), request.getUserName())));
     }
+    public Mono<Player> getPlayerOrFail(PlayerRequest request){
+        return getPlayerByUsername(request.getUserName())
+                .switchIfEmpty(Mono.error(new EntityNotFoundException(RealPlayer.class, request.getUserName())));
+    }
 
     public Mono<Player> savePlayer(RealPlayer player) {
         return playerRepository.save(player).map(realPlayer -> (Player) realPlayer);
@@ -39,7 +43,6 @@ public class PlayerService {
 
     public Mono<Player> getPlayerByUsername(String userName) {
         return playerRepository.findByUserName(userName)
-                .switchIfEmpty(Mono.error(new EntityNotFoundException(RealPlayer.class, userName)))
                 .map(realPlayer -> (Player) realPlayer);
     }
 

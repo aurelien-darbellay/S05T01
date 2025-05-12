@@ -1,7 +1,8 @@
 package aDarbellay.s05.t1.controller;
 
+import aDarbellay.s05.t1.dto.responseDTO.DTOMapper;
+import aDarbellay.s05.t1.dto.responseDTO.PlayerDTO;
 import aDarbellay.s05.t1.dto.PlayerRequest;
-import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.service.player.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +21,13 @@ public class RootController {
     }
 
     @PutMapping("/player/{userName}")
-    public Mono<Player> updatePlayerNames(@PathVariable String userName, @RequestBody PlayerRequest request) {
-        return playerService.changePlayerNames(userName, request);
+    public Mono<PlayerDTO> updatePlayerNames(@PathVariable String userName, @RequestBody PlayerRequest request) {
+        return playerService.changePlayerNames(userName, request).map(DTOMapper::playerMapper);
     }
 
     @GetMapping("/ranking")
-    public Flux<Player> getPlayersRanking() {
-        return playerService.getPlayersRanking();
+    public Flux<PlayerDTO> getPlayersRanking() {
+        return playerService.getPlayersRanking().map(DTOMapper::playerMapper);
     }
 
 }

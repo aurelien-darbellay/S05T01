@@ -10,7 +10,14 @@ import java.util.List;
 public class PlayerStrategy {
 
     public enum ResultType {
-        WIN, LOSS, PUSH
+        WIN("win"), LOSS("loss"), PUSH("push");
+        private final String value;
+        ResultType(String value){
+            this.value = value;
+        }
+        public String getValue(){
+            return this.value;
+        }
     }
 
     private int id;

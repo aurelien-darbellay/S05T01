@@ -1,6 +1,9 @@
 package aDarbellay.s05.t1.controller;
 
+import aDarbellay.s05.t1.dto.responseDTO.DTOMapper;
+import aDarbellay.s05.t1.dto.responseDTO.GameDTO;
 import aDarbellay.s05.t1.dto.PlayerRequest;
+import aDarbellay.s05.t1.dto.responseDTO.TurnDTO;
 import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.model.actions.Stand;
 import aDarbellay.s05.t1.model.cards.Card;
@@ -25,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.when;
 
-@WebFluxTest(GameController.class)
+@WebFluxTest({GameController.class, RootController.class})
 class GameControllerTest {
 
     @Autowired
@@ -42,16 +45,17 @@ class GameControllerTest {
     void testGetGameById() {
         Game mockGame = new Game();
         mockGame.setId("id123");
+        GameDTO gameDTO = DTOMapper.gameMapper(mockGame);
         when(gameService.getGameById("id123")).thenReturn(Mono.just(mockGame));
 
         webTestClient.get()
                 .uri("/game/id123")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(Game.class)
+                .expectBody(GameDTO.class)
                 .consumeWith(gameEntityExchangeResult -> {
-                    Game game = gameEntityExchangeResult.getResponseBody();
-                    assertEquals(mockGame, game);
+                    GameDTO game = gameEntityExchangeResult.getResponseBody();
+                    assertEquals(gameDTO, game);
                     System.out.println(game.getPlayers());
                 });
     }
@@ -73,10 +77,10 @@ class GameControllerTest {
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(Game.class)
+                .expectBody(GameDTO.class)
                 .consumeWith(gameEntityExchangeResult -> {
-                    Game returnedGame = gameEntityExchangeResult.getResponseBody();
-                    assertEquals("Aurélien", ((RealPlayer) returnedGame.getPlayers().getFirst()).getFirstName());
+                    GameDTO returnedGame = gameEntityExchangeResult.getResponseBody();
+                    assertEquals("Aurélien", (returnedGame.getPlayers().getFirst()).getFirstName());
                 });
 
     }
@@ -86,6 +90,7 @@ class GameControllerTest {
         RealPlayer player = new RealPlayer();
         player.setFirstName("Aurélien");
         player.setLastName("Darbellay");
+        player.setUserName("Auda");
         player.setId(1);
         Game game = new Game();
         game.setPlayers(List.of(player));
@@ -100,14 +105,15 @@ class GameControllerTest {
         newTurn.setPlayerStrategies(List.of(newPlayerStrategy));
 
         when(gameService.startNewTurn("11", 10, 1)).thenReturn(Mono.just(newTurn));
+        when(playerService.getPlayerId("Auda")).thenReturn(Mono.just(1));
         webTestClient.post()
-                .uri("/game/11/bet?bet=10&&playerId=1")
+                .uri("/game/11/bet?bet=10&&username=Auda")
                 .exchange()
-                .expectBody(Turn.class)
+                .expectBody(TurnDTO.class)
                 .consumeWith(turnEntityExchangeResult -> {
-                    Turn turn = turnEntityExchangeResult.getResponseBody();
+                    TurnDTO turn = turnEntityExchangeResult.getResponseBody();
                     assertEquals(10, turn.getPlayerStrategies().getFirst().getBet());
-                    assertEquals(Turn.TurnState.HANDS_DISTRIBUTED, turn.getTurnState());
+                    assertEquals(Turn.TurnState.HANDS_DISTRIBUTED.getValue(), turn.getTurnState());
                 });
 
     }
@@ -146,15 +152,16 @@ class GameControllerTest {
         newTurn.setPlayerStrategies(List.of(newPlayerStrategy));
 
         when(gameService.playTurn("11", "stand", 1)).thenReturn(Mono.just(newTurn));
+        when(playerService.getPlayerId("Auda")).thenReturn(Mono.just(1));
         webTestClient.post()
-                .uri("/game/11/play?actionType=stand&&playerId=1")
+                .uri("/game/11/play?actionType=stand&&username=Auda")
                 .exchange()
-                .expectBody(Turn.class)
+                .expectBody(TurnDTO.class)
                 .consumeWith(turnEntityExchangeResult -> {
-                    Turn turn = turnEntityExchangeResult.getResponseBody();
+                    TurnDTO turn = turnEntityExchangeResult.getResponseBody();
                     assert turn != null;
-                    assertEquals(Turn.TurnState.TURN_FINISHED, turn.getTurnState());
-                    assertInstanceOf(Stand.class, turn.getPlayerStrategies().getFirst().getActions().getFirst());
+                    assertEquals(Turn.TurnState.TURN_FINISHED.getValue(), turn.getTurnState());
+                    assertEquals(Stand.class.getSimpleName(), turn.getPlayerStrategies().getFirst().getActions().getFirst());
                 });
 
     }
