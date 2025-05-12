@@ -1,0 +1,60 @@
+package testClasses;
+
+import aDarbellay.s05.t1.model.actions.Action;
+import aDarbellay.s05.t1.model.actions.ActionType;
+import aDarbellay.s05.t1.model.actions.Hit;
+import aDarbellay.s05.t1.model.actions.Stand;
+import aDarbellay.s05.t1.model.games.PlayerStrategy;
+import aDarbellay.s05.t1.model.player.Player;
+
+public class RandomPlayerTest implements Player {
+
+    @Override
+    public void placeBet(PlayerStrategy playerStrategy, Integer bet) {
+        playerStrategy.setBet((int) Math.floor(Math.random() * 50));
+    }
+
+    @Override
+    public Action pickAction(ActionType actionType) {
+        return Math.random() < 0.5 ? new Stand() : new Hit();
+    }
+
+    @Override
+    public boolean isInteractive() {
+        return false;
+    }
+
+    @Override
+    public int getId() {
+        return 0;
+    }
+
+    @Override
+    public void setId(int i) {
+    }
+
+    @Override
+    public long getPoints() {
+        return 0;
+    }
+
+    @Override
+    public String getFirstName() {
+        return "Random";
+    }
+
+    @Override
+    public String getLastName() {
+        return "Player";
+    }
+
+    @Override
+    public String getUserName() {
+        return "randomPlayer";
+    }
+
+    @Override
+    public String toString() {
+        return "RandomPlayerTest{}";
+    }
+}
