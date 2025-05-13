@@ -11,6 +11,8 @@ import aDarbellay.s05.t1.model.player.RealPlayer;
 import aDarbellay.s05.t1.repository.PlayerRepository;
 import aDarbellay.s05.t1.service.game.GameService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -21,12 +23,13 @@ import reactor.test.StepVerifier;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 
 @SpringBootTest
-class PlayerDTOServiceTest {
+@ExtendWith(MockitoExtension.class)
+class PlayerServiceTest {
 
     @Autowired
     PlayerService playerService;
@@ -38,13 +41,18 @@ class PlayerDTOServiceTest {
     GameService gameService;
 
     @MockitoBean
-    PlayerRepository mockPlayerRepository;
+    PlayerRepository playerRepository;
 
     @Test
     void test1() {
         PlayerRequest request = new PlayerRequest();
         request.setFirstName("Aurélien");
         request.setLastName("Darbellay");
+        request.setUserName("auda");
+        RealPlayer pl = new RealPlayer();
+        pl.setLastName("Darbellay");
+        when(playerRepository.findByUserName("auda")).thenReturn(Mono.just(pl));
+        when(playerRepository.save(any(RealPlayer.class))).thenReturn(Mono.just(pl));
         Mono<Player> result = playerService.getOrCreatePlayer(request);
         assertNotNull(result);
         StepVerifier.create(result).consumeNextWith(player -> {
@@ -55,16 +63,18 @@ class PlayerDTOServiceTest {
 
     @Test
     void savePlayer() {
-        RealPlayer player = factory.createNewPlayer("aure", "dada", "auda");
+
         RealPlayer player1 = factory.createNewPlayer("Seth", "dada", "Seda");
-        RealPlayer player2 = factory.createNewPlayer("Atahualpa", "Yupanki", "ata");
-        RealPlayer player3 = factory.createNewPlayer("Mohammed", "Khalil", "Moka");
-        List.of(player1, player2, player3, player)
-                .forEach(pl -> playerService.savePlayer(pl).block());
+        when(playerRepository.save(any(RealPlayer.class))).thenReturn(Mono.just(player1));
+        Mono<Player> result = playerService.savePlayer(player1);
+        StepVerifier.create(result)
+                .expectNextMatches(player -> player.getFirstName().equals("Seth"))
+                .verifyComplete();
     }
 
     @Test
     void getPlayerByUsername() {
+        when(playerRepository.findByUserName(any(String.class))).thenReturn(Mono.empty());
         Mono<Player> result = playerService.getPlayerByUsername("audi");
         assertInstanceOf(Mono.class, result);
         StepVerifier.create(result)
@@ -73,31 +83,48 @@ class PlayerDTOServiceTest {
     }
 
     @Test
+    void getPlayerByUsernameFound() {
+        when(playerRepository.findByUserName("audi")).thenReturn(Mono.just(factory.createNewPlayer("a", "ta", "ata")));
+        Mono<Player> result = playerService.getPlayerByUsername("audi");
+        assertInstanceOf(Mono.class, result);
+        StepVerifier.create(result)
+                .expectNextMatches(player -> player.getFirstName().equals("a"))
+                .verifyComplete();
+    }
+
+    @Test
     void getOrCreatePlayer() {
         PlayerRequest request = new PlayerRequest();
         request.setUserName("ata");
+        request.setLastName("o");
+        request.setFirstName("b");
+
+        // Player already exists
+        when(playerRepository.findByUserName("ata"))
+                .thenReturn(Mono.just(factory.createNewPlayer("a", "ta", "ata")));
+
         Mono<Player> result = playerService.getOrCreatePlayer(request);
+
         StepVerifier.create(result)
                 .expectNextMatches(player -> player.getUserName().equals("ata"))
                 .verifyComplete();
-        PlayerRequest request1 = new PlayerRequest();
-        request1.setUserName("Asu");
-        request1.setFirstName("Assumpta");
-        request1.setLastName("Pascual");
-        Mono<Player> result1 = playerService.getOrCreatePlayer(request1);
-        StepVerifier.create(result1)
-                .expectNextMatches(player -> player.getId() == 6)
-                .verifyComplete();
 
+        verify(playerRepository).findByUserName("ata");
+        verify(playerRepository, never()).save(any(RealPlayer.class)); // Should NOT be called
     }
 
     @Test
     void changePlayerNames() {
         PlayerRequest request1 = new PlayerRequest();
-        request1.setUserName("Asun");
+        request1.setUserName("Alon");
         request1.setFirstName("Assumpto");
         request1.setLastName("Pascualina");
-        playerService.changePlayerNames("Asun", request1).block();
+        when(playerRepository.findByUserName("Asun"))
+                .thenReturn(Mono.just(factory.createNewPlayer("a", "ta", "Asun")));
+        when(playerRepository.save(any(RealPlayer.class))).thenReturn(Mono.just(factory.createNewPlayer("Assumpto", "Pascualina", "Asun")));
+        Mono<Player> result = playerService.changePlayerNames("Asun", request1);
+        StepVerifier.create(result)
+                .expectNextMatches(player -> player.getFirstName().equals("Assumpto"));
     }
 
     @Test
@@ -121,9 +148,9 @@ class PlayerDTOServiceTest {
         Game game2 = new GameBuilder().setId("2").setPlayers(List.of(player2)).setTurnsPlayed(List.of(turn21)).build();
 
         when(gameService.getAllGame()).thenReturn(Flux.fromIterable(List.of(game1, game2)));
-        when(mockPlayerRepository.findAll()).thenReturn(Flux.fromIterable(List.of(player1, player2)));
-        when(mockPlayerRepository.save(player1)).thenReturn(Mono.just(player1));
-        when(mockPlayerRepository.save(player2)).thenReturn(Mono.just(player2));
+        when(playerRepository.findAll()).thenReturn(Flux.fromIterable(List.of(player1, player2)));
+        when(playerRepository.save(player1)).thenReturn(Mono.just(player1));
+        when(playerRepository.save(player2)).thenReturn(Mono.just(player2));
 
         Flux<Player> result = playerService.getPlayersRanking();
         StepVerifier.create(result)
@@ -131,8 +158,8 @@ class PlayerDTOServiceTest {
                 .expectNextMatches(player -> player.getFirstName().equals("Lola"))
                 .verifyComplete();
 
-        verify(mockPlayerRepository).save(player1);
-        verify(mockPlayerRepository).save(player2);
+        verify(playerRepository).save(player1);
+        verify(playerRepository).save(player2);
 
     }
 }

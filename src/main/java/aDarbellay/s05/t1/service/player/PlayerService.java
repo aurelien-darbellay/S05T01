@@ -30,14 +30,17 @@ public class PlayerService {
 
     public Mono<Player> getOrCreatePlayer(PlayerRequest request) {
         return getPlayerByUsername(request.getUserName())
-                .switchIfEmpty(savePlayer(factory.createNewPlayer(request.getFirstName(), request.getLastName(), request.getUserName())));
+                .switchIfEmpty(Mono.defer(() -> savePlayer(factory.createNewPlayer(request.getFirstName(), request.getLastName(), request.getUserName()))));
+
     }
-    public Mono<Player> getPlayerOrFail(PlayerRequest request){
+
+    public Mono<Player> getPlayerOrFail(PlayerRequest request) {
         return getPlayerByUsername(request.getUserName())
                 .switchIfEmpty(Mono.error(new EntityNotFoundException(RealPlayer.class, request.getUserName())));
     }
 
     public Mono<Player> savePlayer(RealPlayer player) {
+        System.out.println("Empty");
         return playerRepository.save(player).map(realPlayer -> (Player) realPlayer);
     }
 

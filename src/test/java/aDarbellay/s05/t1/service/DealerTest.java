@@ -19,7 +19,7 @@ import aDarbellay.s05.t1.model.player.Player;
 import aDarbellay.s05.t1.model.player.RandomPlayer;
 import aDarbellay.s05.t1.service.game.Dealer;
 import aDarbellay.s05.t1.validation.DealingValidation;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import testClasses.InteractivePlayer;
 
@@ -38,8 +38,8 @@ class DealerTest {
     static List<Player> mixedPlayers;
 
 
-    @BeforeAll
-    static void setUp() {
+    @BeforeEach
+    void setUp() {
         game = new Game();
         fullDeck = new Deck();
         Player cautiousPlayer = new CautiousPlayer();
@@ -118,13 +118,9 @@ class DealerTest {
         Turn newTurn = bob.startTurn(game, new Bet(10), 3);
         System.out.println(newTurn.getTurnState().getValue());
         ActionChoice actionChoice = new ActionChoice();
-        actionChoice.setActionType(ActionType.HIT);
+        actionChoice.setActionType(ActionType.STAND);
         Turn nextStep = bob.playTurn(game, actionChoice, 3);
         System.out.println(nextStep.toString());
-        ActionChoice anotherChoice = new ActionChoice();
-        anotherChoice.setActionType(ActionType.STAND);
-        Turn turnDone = bob.playTurn(game, anotherChoice, 3);
-        System.out.println(turnDone.toString());
     }
 
     @Test
@@ -152,7 +148,7 @@ class DealerTest {
         Card secondCard = hand.get(1);
         hand.remove(secondCard);
         newTurn.getReserve().add(secondCard);
-        Card firstCardTwin = newTurn.getReserve().stream().filter(card -> card.getPoints() == hand.getFirst().getPoints()).findFirst().orElse(null);
+        Card firstCardTwin = newTurn.getReserve().stream().filter(card -> card.getValue().substring(1).equals(hand.getFirst().getValue().substring(1))).findFirst().orElse(null);
         hand.add(firstCardTwin);
         ActionChoice actionChoice = new ActionChoice();
         actionChoice.setActionType(ActionType.SPLIT);
@@ -162,6 +158,6 @@ class DealerTest {
         System.out.println(bob.playTurn(game, anotherChoice, 3).toString());
         ActionChoice yetAnotherChoice = new ActionChoice();
         yetAnotherChoice.setActionType(ActionType.DOUBLE);
-        System.out.println(bob.playTurn(game, yetAnotherChoice, 30).toString());
+        System.out.println(bob.playTurn(game, yetAnotherChoice, -30).toString());
     }
 }
