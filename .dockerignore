@@ -21,6 +21,7 @@ Thumbs.db
 .BlackJack.drawio
 HELP.md
 init-scripts
+forRender/
 
 # Docker-related (optional)
 .dockerignore

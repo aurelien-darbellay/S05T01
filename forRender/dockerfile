@@ -1,0 +1,23 @@
+# Base image with Java, MySQL, and MongoDB (Alpine variant)
+FROM openjdk:21-jdk-alpine
+
+# Install MariaDB (MySQL-compatible) and MongoDB client dependencies
+RUN apk add --no-cache \
+    mariadb mariadb-client \
+    mongodb \
+    bash
+
+# Copy init scripts
+COPY init.sql  /docker-entrypoint-initdb.d/init.sql
+
+# Copy your Spring Boot jar and startup script
+COPY app.jar     /app/app.jar
+COPY start.sh    /app/start.sh
+RUN chmod +x /app/start.sh
+
+# Expose your application port
+EXPOSE 8080
+
+# Start all services and the app
+WORKDIR /app
+CMD ["./start.sh"]
