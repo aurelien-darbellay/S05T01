@@ -6,6 +6,9 @@ plugins {
 
 group = 'aDarbellay.s05.t1'
 version = '0.0.1'
+bootJar {
+    archiveFileName = 'blackjack-app.jar'
+}
 
 java {
     toolchain {
@@ -22,7 +25,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation 'io.asyncer:r2dbc-mysql:1.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.8'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'

@@ -1,0 +1,27 @@
+# IntelliJ-specific
+.idea/
+*.iml
+
+# Gradle-specific
+.gradle/
+setting.gradle
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Logs and other noise
+*.log
+.$BlackJack.drawio.bkp
+.BlackJack.drawio
+HELP.md
+init-scripts
+
+# Docker-related (optional)
+.dockerignore
+docker-compose.yml

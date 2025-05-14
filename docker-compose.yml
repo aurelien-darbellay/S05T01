@@ -1,9 +1,6 @@
-version: "3.9"
-
 services:
   app:
-    build: .
-    image: s05t01:latest
+    image: aureliendarbellay/s05t01:latest
     ports:
       - "8080:8080"
     environment:
@@ -18,9 +15,9 @@ services:
   mysql:
     image: mysql:8.3
     environment:
-      MYSQL_DATABASE:    S05T01
-      MYSQL_USER:        gamer
-      MYSQL_PASSWORD:    p@ssw0rd
+      MYSQL_DATABASE: S05T01
+      MYSQL_USER: gamer
+      MYSQL_PASSWORD: p@ssw0rd
       MYSQL_ROOT_PASSWORD: rootpw
     volumes:
       - mysql_data:/var/lib/mysql

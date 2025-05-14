@@ -1,8 +1,8 @@
 package aDarbellay.s05.t1.controller;
 
+import aDarbellay.s05.t1.dto.PlayerRequest;
 import aDarbellay.s05.t1.dto.responseDTO.DTOMapper;
 import aDarbellay.s05.t1.dto.responseDTO.GameDTO;
-import aDarbellay.s05.t1.dto.PlayerRequest;
 import aDarbellay.s05.t1.dto.responseDTO.TurnDTO;
 import aDarbellay.s05.t1.exception.IllegalActionException;
 import aDarbellay.s05.t1.model.actions.Stand;
@@ -25,7 +25,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.when;
 
 @WebFluxTest({GameController.class, RootController.class})
@@ -65,6 +64,7 @@ class GameControllerTest {
         PlayerRequest request = new PlayerRequest();
         request.setFirstName("Aurélien");
         request.setLastName("Darbellay");
+        request.setUserName("Auda");
         RealPlayer player = new RealPlayer();
         player.setFirstName("Aurélien");
         player.setLastName("Darbellay");
