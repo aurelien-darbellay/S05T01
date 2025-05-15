@@ -47,7 +47,7 @@ to store game data and **MySQL** (via R2DBC) to persist player information and r
 ## 📖 API Documentation
 
 Swagger UI is available at:
-http://localhost:8080/swagger-ui/index.html
+https://s05t01-blackjack.onrender.com/webjars/swagger-ui/index.html
 
 ## 🔗 GitHub
 
@@ -62,3 +62,6 @@ https://hub.docker.com/repository/docker/aureliendarbellay/s05t01/general
 
 1. git clone https://github.com/aurelien-darbellay/S05T01.git
 2. docker compose up (or docker compose up -d to run the process in the background)
+
+## 📦 Deployment on Render (with services hosted on Aiven and Atlas)
+https://s05t01-blackjack.onrender.com/
