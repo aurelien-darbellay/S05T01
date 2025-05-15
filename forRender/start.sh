@@ -1,29 +1,27 @@
 #!/usr/bin/env bash
 set -e
 
-# Start MySQL server and initialize if needed
-echo "Initializing MySQL..."
-mysqld --datadir=/var/lib/mysql --user=mysql --skip-networking --skip-grant-tables &
-sleep 5
-mysql < /docker-entrypoint-initdb.d/init.sql
-kill %1
+# Initialize MySQL data directory if empty
+if [ ! -d "/var/lib/mysql/mysql" ]; then
+    echo "Initializing MySQL data directory..."
+    mysqld --initialize-insecure --user=mysql
+fi
 
-# Start MongoDB and initialize
-echo "Initializing MongoDB..."
+# Start MySQL server
+echo "Starting MySQL server..."
+service mysql start
+
+# Initialize database if needed
+if [ -f "/docker-entrypoint-initdb.d/init.sql" ]; then
+    echo "Running init script..."
+    mysql -u root < /docker-entrypoint-initdb.d/init.sql
+fi
+
+# Start MongoDB
+echo "Starting MongoDB..."
 mkdir -p /data/db
 mongod --dbpath /data/db --fork --logpath /var/log/mongod.log
-sleep 5
-mongo < /docker-entrypoint-initdb.d/init.mongo.js
-mongod --dbpath /data/db --shutdown
 
-# Launch MySQL on default port 3306
-echo "Starting MySQL server..."
-mysqld --datadir=/var/lib/mysql --user=mysql &
-
-# Launch MongoDB on default port 27017
-echo "Starting MongoDB server..."
-mongod --dbpath /data/db --fork --logpath /var/log/mongod.log &
-
-# Finally, start the Spring Boot application
+# Start Spring Boot application
 echo "Starting Spring Boot application..."
-java -jar app.jar
+exec java -jar app.jar

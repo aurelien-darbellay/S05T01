@@ -1,23 +1,36 @@
-# Base image with Java, MySQL, and MongoDB (Alpine variant)
-FROM openjdk:21-jdk-alpine
+FROM ubuntu:22.04
 
-# Install MariaDB (MySQL-compatible) and MongoDB client dependencies
-RUN apk add --no-cache \
-    mariadb mariadb-client \
-    mongodb \
-    bash
+# Set non-interactive mode to avoid MySQL timezone prompts
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Copy init scripts
-COPY init.sql  /docker-entrypoint-initdb.d/init.sql
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    gnupg curl software-properties-common
 
-# Copy your Spring Boot jar and startup script
-COPY app.jar     /app/app.jar
-COPY start.sh    /app/start.sh
+# Add MongoDB repo
+RUN curl -fsSL https://pgp.mongodb.com/server-7.0.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" \
+    | tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+
+# Install packages
+RUN apt-get update && apt-get install -y \
+    mongodb-org \
+    mysql-server \
+    openjdk-21-jdk-headless
+
+# Copy init scripts and application files
+COPY init.sql /docker-entrypoint-initdb.d/
+COPY app.jar /app/app.jar
+COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
-# Expose your application port
-EXPOSE 8080
+# Initialize MySQL properly
+RUN mkdir -p /var/run/mysqld && \
+    chown -R mysql:mysql /var/run/mysqld && \
+    chown -R mysql:mysql /var/lib/mysql
 
-# Start all services and the app
+# Expose ports
+EXPOSE 8080 3306 27017
+
 WORKDIR /app
 CMD ["./start.sh"]
