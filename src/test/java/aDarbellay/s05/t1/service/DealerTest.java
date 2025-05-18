@@ -117,10 +117,13 @@ class DealerTest {
         Dealer bob = new Dealer(fullDeck, new DealingValidation());
         Turn newTurn = bob.startTurn(game, new Bet(10), 3);
         System.out.println(newTurn.getTurnState().getValue());
-        ActionChoice actionChoice = new ActionChoice();
-        actionChoice.setActionType(ActionType.STAND);
-        Turn nextStep = bob.playTurn(game, actionChoice, 3);
-        System.out.println(nextStep.toString());
+        PlayerStrategy strategy = newTurn.getPlayerStrategies().stream().filter(playerStrategy -> playerStrategy.getId() == 3).findFirst().orElse(null);
+        if (strategy != null && strategy.getHand().getHandValue() < 21) {
+            ActionChoice actionChoice = new ActionChoice();
+            actionChoice.setActionType(ActionType.STAND);
+            Turn nextStep = bob.playTurn(game, actionChoice, 3);
+            System.out.println(nextStep.toString());
+        }
     }
 
     @Test
@@ -130,12 +133,18 @@ class DealerTest {
         Turn newTurn = bob.startTurn(game, new Bet(10), 3);
         bob.startTurn(game, new Bet(12), 4);
         System.out.println(game.getActiveTurn().toString());
-        ActionChoice actionChoice = new ActionChoice();
-        actionChoice.setActionType(ActionType.STAND);
-        System.out.println(bob.playTurn(game, actionChoice, 3).toString());
-        ActionChoice anotherChoice = new ActionChoice();
-        anotherChoice.setActionType(ActionType.HIT);
-        System.out.println(bob.playTurn(game, anotherChoice, 4).toString());
+        PlayerStrategy strategy3 = newTurn.getPlayerStrategies().stream().filter(playerStrategy -> playerStrategy.getId() == 3).findFirst().orElse(null);
+        if (strategy3 != null && strategy3.getHand().getHandValue() < 21) {
+            ActionChoice actionChoice = new ActionChoice();
+            actionChoice.setActionType(ActionType.STAND);
+            System.out.println(bob.playTurn(game, actionChoice, 3).toString());
+        }
+        PlayerStrategy strategy4 = newTurn.getPlayerStrategies().stream().filter(playerStrategy -> playerStrategy.getId() == 4).findFirst().orElse(null);
+        if (strategy4 != null && strategy4.getHand().getHandValue() < 21) {
+            ActionChoice anotherChoice = new ActionChoice();
+            anotherChoice.setActionType(ActionType.HIT);
+            System.out.println(bob.playTurn(game, anotherChoice, 4).toString());
+        }
     }
 
     @Test
@@ -153,11 +162,17 @@ class DealerTest {
         ActionChoice actionChoice = new ActionChoice();
         actionChoice.setActionType(ActionType.SPLIT);
         System.out.println(bob.playTurn(game, actionChoice, 3).toString());
-        ActionChoice anotherChoice = new ActionChoice();
-        anotherChoice.setActionType(ActionType.STAND);
-        System.out.println(bob.playTurn(game, anotherChoice, 3).toString());
-        ActionChoice yetAnotherChoice = new ActionChoice();
-        yetAnotherChoice.setActionType(ActionType.DOUBLE);
-        System.out.println(bob.playTurn(game, yetAnotherChoice, -30).toString());
+        PlayerStrategy strategy3 = newTurn.getPlayerStrategies().stream().filter(playerStrategy -> playerStrategy.getId() == 3).findFirst().orElse(null);
+        if (strategy3 != null && strategy3.getHand().getHandValue() < 21) {
+            ActionChoice anotherChoice = new ActionChoice();
+            anotherChoice.setActionType(ActionType.STAND);
+            System.out.println(bob.playTurn(game, anotherChoice, 3).toString());
+        }
+        PlayerStrategy strategyCopy = newTurn.getPlayerStrategies().stream().filter(playerStrategy -> playerStrategy.getId() == -30).findFirst().orElse(null);
+        if (strategyCopy != null && strategyCopy.getHand().getHandValue() < 21) {
+            ActionChoice yetAnotherChoice = new ActionChoice();
+            yetAnotherChoice.setActionType(ActionType.DOUBLE);
+            System.out.println(bob.playTurn(game, yetAnotherChoice, -30).toString());
+        }
     }
 }

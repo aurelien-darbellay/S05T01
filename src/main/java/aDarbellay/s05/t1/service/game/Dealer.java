@@ -46,6 +46,21 @@ public class Dealer {
         return newTurn;
     }
 
+    public Turn playTurn(Game game, ActionChoice actionChoice, int strategyId) throws EntityNotFoundException, UntimelyActionException, IllegalActionException, IllegalBetException {
+        Turn activeTurn = game.getActiveTurn();
+        if (isNotReadyToPlayHands(game)) throw new UntimelyActionException(Action.class);
+        activeTurn.setTurnState(Turn.TurnState.PLAYERS_CHOOSE_STRATEGY);
+        invitePlayersToPlayHand(activeTurn, actionChoice, strategyId);
+        if (activeTurn.getTurnState().equals(Turn.TurnState.HANDS_PLAYED)) {
+            revealDealerHand(activeTurn);
+            calculateResults(activeTurn);
+            activeTurn.setTurnState(Turn.TurnState.TURN_FINISHED);
+            game.getTurnsPlayed().add(activeTurn);
+            game.setActiveTurn(null);
+        }
+        return activeTurn;
+    }
+
     private Turn initializeNewTurn(Game game) {
         if (game.getActiveTurn() != null) return game.getActiveTurn();
         Turn newTurn = new Turn(game.getTurnsPlayed().size() + 1);
@@ -90,20 +105,6 @@ public class Dealer {
         return drawnCards;
     }
 
-    public Turn playTurn(Game game, ActionChoice actionChoice, int strategyId) throws EntityNotFoundException, UntimelyActionException, IllegalActionException, IllegalBetException {
-        Turn activeTurn = game.getActiveTurn();
-        if (isNotReadyToPlayHands(game)) throw new UntimelyActionException(Action.class);
-        activeTurn.setTurnState(Turn.TurnState.PLAYERS_CHOOSE_STRATEGY);
-        invitePlayersToPlayHand(activeTurn, actionChoice, strategyId);
-        if (activeTurn.getTurnState().equals(Turn.TurnState.HANDS_PLAYED)) {
-            revealDealerHand(activeTurn);
-            calculateResults(activeTurn);
-            activeTurn.setTurnState(Turn.TurnState.TURN_FINISHED);
-            game.getTurnsPlayed().add(activeTurn);
-            game.setActiveTurn(null);
-        }
-        return activeTurn;
-    }
 
     private void invitePlayersToPlayHand(Turn turn, ActionChoice actionChoice, int strategyId) throws EntityNotFoundException, IllegalActionException, IllegalBetException {
 
