@@ -1,6 +1,7 @@
 package aDarbellay.s05.t1.repository;
 
 import aDarbellay.s05.t1.model.games.Game;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -8,6 +9,7 @@ import testClasses.RandomPlayerTest;
 
 import java.util.List;
 
+@Tag("db")
 @DataMongoTest
 class GameRepositoryTest {
     @Autowired

@@ -2,7 +2,7 @@
 FROM gradle:8.14-jdk21 AS builder
 WORKDIR /app
 COPY . .
-RUN gradle build --no-daemon
+RUN gradle build --no-daemon -PexcludeTags=db
 
 #Stage  2 :  build image
 FROM openjdk:21

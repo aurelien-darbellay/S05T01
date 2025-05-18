@@ -34,4 +34,9 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    if (project.hasProperty('excludeTags')) {
+        useJUnitPlatform {
+            excludeTags project.property('excludeTags')
+        }
+    }
 }
