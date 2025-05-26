@@ -23,11 +23,14 @@ public class RankingManager {
     }
 
     public Flux<Player> calculatePlayersPoints(Flux<RealPlayer> fluxPlayers) {
-        return fluxPlayers.flatMap(player -> gameService.getAllGame()
-                .filter(game -> gameHasPlayer(game, player))
-                .flatMapIterable(Game::getTurnsPlayed)
-                .doOnNext(turn -> calculatePlayerPoints(turn, player))
-                .then(Mono.just(player)));
+        return fluxPlayers.flatMap(player -> {
+            player.setPoints(0);
+            return gameService.getAllGame()
+                    .filter(game -> gameHasPlayer(game, player))
+                    .flatMapIterable(Game::getTurnsPlayed)
+                    .doOnNext(turn -> calculatePlayerPoints(turn, player))
+                    .then(Mono.just(player));
+        });
     }
 
     private void calculatePlayerPoints(Turn turn, RealPlayer player) {
