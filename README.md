@@ -1,7 +1,6 @@
 # 🃏 Reactive Blackjack API
 
-This project is a **Spring Boot Reactive application** that allows players to play Blackjack online. It simulates
-multiplayer settings. It uses **MongoDB**
+This project is a **Spring Boot Reactive application** that allows players to play Blackjack online. It uses **MongoDB**
 to store game data and **MySQL** (via R2DBC) to persist player information and rankings.
 
 ## 🚀 Features
