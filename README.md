@@ -45,12 +45,12 @@ to store game data and **MySQL** (via R2DBC) to persist player information and r
 | GET    | `/ranking`           | Get all players ranked by points |
 
 ## 📦 Deployment on Render (with services hosted on Aiven and Atlas)
-https://s05t01-blackjack.onrender.com/
+https://black-jack-yqhx.onrender.com
 
 ## 📖 API Documentation
 
 Swagger UI is available at:
-https://s05t01-blackjack.onrender.com/webjars/swagger-ui/index.html
+https://black-jack-yqhx.onrender.com/webjars/swagger-ui/index.html
 
 If you server locally from your device (using docker compose up): 
 https://localhost:8080/webjars/swagger-ui/index.html
