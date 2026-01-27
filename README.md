@@ -1,6 +1,7 @@
 # 🃏 Reactive Blackjack API
 
-This project is a **Spring Boot Reactive application** that allows players to play Blackjack online. It uses **MongoDB**
+This project is a **Spring Boot Reactive application** that allows players to play Blackjack online. It simulates
+multiplayer settings. It uses **MongoDB**
 to store game data and **MySQL** (via R2DBC) to persist player information and rankings.
 
 ## 🚀 Features
@@ -45,6 +46,7 @@ to store game data and **MySQL** (via R2DBC) to persist player information and r
 | GET    | `/ranking`           | Get all players ranked by points |
 
 ## 📦 Deployment on Render (with services hosted on Aiven and Atlas)
+
 https://black-jack-yqhx.onrender.com
 
 ## 📖 API Documentation
@@ -52,7 +54,7 @@ https://black-jack-yqhx.onrender.com
 Swagger UI is available at:
 https://black-jack-yqhx.onrender.com/webjars/swagger-ui/index.html
 
-If you server locally from your device (using docker compose up): 
+If you server locally from your device (using docker compose up):
 https://localhost:8080/webjars/swagger-ui/index.html
 
 ## 🔗 GitHub
@@ -60,7 +62,7 @@ https://localhost:8080/webjars/swagger-ui/index.html
 You can find the source code for this project on GitHub:
 https://github.com/aurelien-darbellay/S05T01.git
 
-Docker image hosted in Git Packages: 
+Docker image hosted in Git Packages:
 https://github.com/users/aurelien-darbellay/packages/container/package/s05t01
 
 ## 🔗 DockerHub repository
@@ -73,6 +75,7 @@ https://hub.docker.com/repository/docker/aureliendarbellay/s05t01/general
 2. docker compose up (or docker compose up -d to run the process in the background)
 
 ## 📥 ➡️ 🛠️ ➡️ ✅ GitHub/Render workflow
+
 https://github.com/aurelien-darbellay/S05T01/blob/main/.github/workflows/deploy-to-render.yml
 
 
